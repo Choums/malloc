@@ -19,7 +19,7 @@
 // #include <sys/mmap.h>
 # include <sys/resource.h>
 # include <sys/time.h>
-#include <stdbool.h>
+# include <stdbool.h>
 # include "libft.h"
 
 
@@ -31,10 +31,10 @@
  *	@param prev Ptr to previous chunk.
  */
 typedef struct s_data {
-	bool free;
 	size_t size;
 	struct s_data* next;
 	struct s_data* prev;
+	bool free;
 } t_data;
 
 #endif
