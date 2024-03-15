@@ -6,7 +6,7 @@
 /*   By: chaidel <chaidel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 17:16:54 by chaidel           #+#    #+#             */
-/*   Updated: 2024/03/02 19:21:06 by chaidel          ###   ########.fr       */
+/*   Updated: 2024/03/15 18:06:14 by chaidel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,4 +26,21 @@
 size_t align8(size_t size)
 {
 	return (((((size - 1) >> 3) << 3)) + 8);
+}
+
+t_mptr* base  = NULL;
+
+void* ft_malloc(size_t size)
+{
+	void* ptr;
+	
+	if (!base)
+		pthread_mutex_init(&mutex, NULL);
+	pthread_mutex_lock(&mutex);
+
+	ptr = mem_alloc(size);
+	
+	pthread_mutex_unlock(&mutex);
+	
+	return (ptr);
 }

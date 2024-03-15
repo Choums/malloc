@@ -5,6 +5,9 @@ INCDIR		=	./includes
 OBJDIR		=	obj
 
 SRC			=	main.c\
+				malloc.c\
+				allocation.c\
+				finder.c\
 
 
 OBJ			=	$(addprefix $(OBJDIR)/,$(SRC:.c=.o))
