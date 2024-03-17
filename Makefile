@@ -8,12 +8,13 @@ SRC			=	main.c\
 				malloc.c\
 				allocation.c\
 				finder.c\
+				display.c\
 
 
 OBJ			=	$(addprefix $(OBJDIR)/,$(SRC:.c=.o))
 
 CC			=	gcc
-CFLAGS		=	-g -Wall -Wextra -Werror #-fsanitize=address #-static-libasan
+CFLAGS		=	-g -Wall -Wextra -Werror -fsanitize=address #-static-libasan
 
 FT			=	./libft/
 FT_LIB		=	$(addprefix $(FT),libft.a)

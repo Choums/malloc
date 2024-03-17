@@ -23,7 +23,6 @@
 # include <pthread.h>
 # include "libft.h"
 
-
 # define TINY_SIZE	256
 # define SMALL_SIZE	4096
 
@@ -43,22 +42,39 @@ typedef enum TYPE {
 	large
 } TYPE;
 
-/**
- * Head pointers of meta-data linked list and their sizes.
-*/
-typedef struct mptr {
+
+struct s_mptr {
 	void*	ptr_tiny;
 	void*	ptr_small;
 	void*	ptr_large;
-	// size_t	size_tiny;
-	// size_t	size_small;
-	// size_t	size_large;
-} t_mptr;
+	size_t	size_tiny;
+	size_t	size_small;
+	size_t	size_large;
+	void*	lst_tiny;
+	void*	lst_small;
+	void*	lst_large;
+};
+
+/**
+ * Head pointers of meta-data linked list and their zone size.
+*/
+typedef struct s_mptr t_mptr;
 
 /**
  * Global variable on heads of mallocated regions.
+ * @param ptr_ Pointers on the head of the allocations (first meta).
+ * @param size_ Total size of allocation type.
+ * @param lst_ Pointers on the end of the allocaitons (last meta).
+ * @note Head pointers of meta-data linked list and their zone size.
 */
 extern t_mptr* base;
+
+struct s_data {
+	size_t size;
+	struct s_data* next;
+	struct s_data* prev;
+	bool free;
+};
 
 /**
  *  @brief Header block before each chunks containing information.
@@ -67,28 +83,30 @@ extern t_mptr* base;
  *	@param next Ptr to the next chunk.
  *	@param prev Ptr to previous chunk.
  */
-typedef struct s_data {
-	size_t size;
-	struct s_data* next;
-	struct s_data* prev;
-	bool free;
-} t_data;
+typedef struct s_data t_data;
 
 /**
  * Size of meta-data (header) information.
 */
 # define META_DATA sizeof(t_data)
 
-/**
- * Thread safety.
-*/
-extern pthread_mutex_t mutex;
+/** Thread safety. **/
+
+pthread_mutex_t mutex;
+
 
 void*	ft_malloc(size_t size);
+
+/**	Allocation **/
 void*	mem_alloc(size_t size);
-int		init_base(void);
+bool	init_base(void);
 // void*	tiny_alloc(size_t size, TYPE type);
 // void*	small_alloc(size_t size, TYPE type);
 void*	large_alloc(size_t size);
+
+/** Alloc display functions **/
+
+void	show_alloc_mem();
+size_t	get_alloc_mem_type(t_data* head);
 
 #endif

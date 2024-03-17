@@ -6,7 +6,7 @@
 /*   By: chaidel <chaidel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/23 15:28:08 by chaidel           #+#    #+#             */
-/*   Updated: 2022/07/22 18:39:14 by chaidel          ###   ########.fr       */
+/*   Updated: 2024/03/17 18:37:21 by chaidel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,22 @@
 # include <stdlib.h>
 # include <string.h>
 # include <unistd.h>
+# include "ft_printf.h"
+
+/** Colors **/
+
+# define RED "\033[0;31m" // RED
+# define GRN "\033[0;32m" // GREEN
+# define YEL "\033[0;33m" // YELLOW
+# define BLU "\033[0;34m" // BLUE
+# define PUR "\033[0;35m" // PURPLE
+# define BRED "\033[1;31m" // RED BOLD
+# define BGRN "\033[1;32m" // GREEN BOLD
+# define BYEL "\033[1;33m" // YELLOW BOLD
+# define BBLU "\033[1;34m" // BLUE BOLD
+# define BPUR "\033[1;35m" // PURPLE BOLD
+# define BWHI "\033[1;37m" // WHITE BOLD
+# define END "\033[0m"
 
 typedef struct s_list
 {

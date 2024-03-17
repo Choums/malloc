@@ -1,4 +1,4 @@
- ************************************************************************** */
+/* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   allocation.c                                       :+:      :+:    :+:   */
@@ -6,7 +6,7 @@
 /*   By: chaidel <chaidel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/06 17:23:56 by chaidel           #+#    #+#             */
-/*   Updated: 2024/03/15 18:18:20 by chaidel          ###   ########.fr       */
+/*   Updated: 2024/03/17 18:02:33 by chaidel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,14 @@ bool	init_base() {
 	base->ptr_tiny = NULL;
 	base->ptr_small = NULL;
 	base->ptr_large = NULL;
+	
+	base->lst_tiny = NULL;
+	base->lst_small = NULL;
+	base->lst_large = NULL;
+
+	base->size_tiny = 0;
+	base->size_small = 0;
+	base->size_large = 0;
 
 	return (true);
 }
@@ -78,7 +86,7 @@ void* large_alloc(size_t size)
 		}
 		base->ptr_large = ptr;
 		
-		(t_data*)base->ptr_large->size = size;
+		// (t_data*)base->ptr_large->size = size;
 		// (t_data*)base->ptr_large->free = false;
 		// base->(t_data*)ptr_large->next = NULL;
 	} else { // add alloc as last.
