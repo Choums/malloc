@@ -6,7 +6,7 @@
 /*   By: chaidel <chaidel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/06 17:23:56 by chaidel           #+#    #+#             */
-/*   Updated: 2024/03/18 14:19:49 by chaidel          ###   ########.fr       */
+/*   Updated: 2024/03/18 14:56:57 by chaidel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,10 @@
 /**
  * First call of malloc, allocate space for global heads.
 */
-bool	init_base() {
-	void* ptr = NULL;
-
-	ptr = mmap(0, sizeof(t_mptr), PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
-	if (ptr == MAP_FAILED) {
+bool	init_base()
+{
+	base = mmap(0, sizeof(t_mptr), PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
+	if (base == MAP_FAILED) {
 		return (false);
 	}
 
@@ -58,12 +57,15 @@ void* mem_alloc(size_t size)
 
 	switch (type) {
 	case tiny:
+		printf("TINY ALLOC\n");
 		// ptr = tiny_alloc //TODO: tiny alloc
 		break;
 	case small:
+		printf("SMALL ALLOC\n");
 		// ptr = small_alloc //TODO: small alloc
 		break;
 	case large:
+		printf("LARGE ALLOC\n");
 		ptr = large_alloc(size);
 		break;
 	}

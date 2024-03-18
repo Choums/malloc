@@ -6,13 +6,13 @@
 /*   By: chaidel <chaidel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/14 16:47:40 by chaidel           #+#    #+#             */
-/*   Updated: 2024/03/17 17:40:07 by chaidel          ###   ########.fr       */
+/*   Updated: 2024/03/18 14:53:12 by chaidel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../ft_printf.h"
 
-static int	ft_get_len_hexa(long int number)
+static int	ft_get_len_hexa(unsigned long int number)
 {
 	int	len;
 
@@ -25,13 +25,13 @@ static int	ft_get_len_hexa(long int number)
 	return (len);
 }
 
-static void	ft_put_neg(int *sign, long int *number)
-{
-	*sign = 1;
-	*number = -(*number);
-}
+// static void	ft_put_neg(int *sign, unsigned long int *number)
+// {
+// 	*sign = 1;
+// 	*number = -(*number);
+// }
 
-char	*ft_itoa_hexa(long int number, char *base)
+char	*ft_itoa_hexa(unsigned long int number, char *base)
 {
 	int		sign;
 	int		len;
@@ -40,12 +40,12 @@ char	*ft_itoa_hexa(long int number, char *base)
 	sign = 0;
 	if (number == 0)
 		return (ft_strdup("0"));
-	if (number < 0)
-	{
-		len = ft_get_len_hexa(-number) + 1;
-		ft_put_neg(&sign, &number);
-	}
-	else
+	// if (number < 0)
+	// {
+	// 	len = ft_get_len_hexa(-number) + 1;
+	// 	ft_put_neg(&sign, &number);
+	// }
+	
 		len = ft_get_len_hexa(number);
 	str = (char *)ft_calloc(len + 1, sizeof(char));
 	if (!str)

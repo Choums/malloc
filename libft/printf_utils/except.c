@@ -6,7 +6,7 @@
 /*   By: chaidel <chaidel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/15 21:57:54 by chaidel           #+#    #+#             */
-/*   Updated: 2024/03/17 17:42:27 by chaidel          ###   ########.fr       */
+/*   Updated: 2024/03/18 14:51:25 by chaidel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,20 +28,20 @@ size_t	ft_un(va_list args)
 	return (o);
 }
 
-size_t	ft_unsigned_putnbr_fd(long int n, int fd)
+size_t	ft_unsigned_putnbr_fd(unsigned long int n, int fd)
 {
-	long int	nbr;
+	unsigned long int	nbr;
 	size_t				len;
 
 	len = 0;
 	if (fd < 0)
 		return (len);
 	nbr = n;
-	if (nbr < 0)
-	{
-		len += ft_putchar_fd('-', fd);
-		nbr *= (-1);
-	}
+	// if (nbr < 0)
+	// {
+	// 	len += ft_putchar_fd('-', fd);
+	// 	nbr *= (-1);
+	// }
 	if (nbr > 9)
 	{
 		len += ft_putnbr_fd(nbr / 10, fd);

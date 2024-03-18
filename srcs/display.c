@@ -6,7 +6,7 @@
 /*   By: chaidel <chaidel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 17:20:50 by chaidel           #+#    #+#             */
-/*   Updated: 2024/03/17 18:45:30 by chaidel          ###   ########.fr       */
+/*   Updated: 2024/03/18 14:49:09 by chaidel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	show_alloc_mem()
 	ft_printf("%sLARGE%s : %p\n",BWHI, END, base->ptr_large);
 	total += get_alloc_mem_type(base->ptr_large);
 	
-	ft_printf("%sTotal%s : %zd bytes\n",BWHI, END, total);
+	ft_printf("%sTotal%s : %d bytes\n",BWHI, END, total);
 }
 
 /**
@@ -45,7 +45,7 @@ size_t	get_alloc_mem_type(t_data* head)
 	
 	while (head) {
 		if (!head->free) { // Display only used mem
-			ft_printf("%p - %p\t: %zd bytes\n", (void *)head + META_DATA, (void *)head + META_DATA + head->size, head->size); // head + META-DATA => start ptr chunk | (void*)head + META_DATA + head->size => end ptr of chunk
+			ft_printf("%p - %p\t: %d bytes\n", (void *)head + META_DATA, (void *)head + META_DATA + head->size, head->size); // head + META-DATA => start ptr chunk | (void*)head + META_DATA + head->size => end ptr of chunk
 			
 			total += head->size;
 		}

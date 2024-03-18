@@ -14,7 +14,7 @@ SRC			=	main.c\
 OBJ			=	$(addprefix $(OBJDIR)/,$(SRC:.c=.o))
 
 CC			=	gcc
-CFLAGS		=	-g -Wall -Wextra -Werror -fsanitize=address #-static-libasan
+CFLAGS		=	-std=gnu99 -g -Wall -Wextra #-Werror -fsanitize=address #-static-libasan
 
 FT			=	./libft/
 FT_LIB		=	$(addprefix $(FT),libft.a)
