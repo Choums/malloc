@@ -6,7 +6,7 @@
 /*   By: chaidel <chaidel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/06 17:23:56 by chaidel           #+#    #+#             */
-/*   Updated: 2024/03/17 18:02:33 by chaidel          ###   ########.fr       */
+/*   Updated: 2024/03/18 14:19:49 by chaidel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ void* mem_alloc(size_t size)
 		return (NULL);
 	}
 
-	return (ptr);
+	return (ptr + META_DATA);
 }
 
 void* large_alloc(size_t size)
@@ -84,13 +84,33 @@ void* large_alloc(size_t size)
 		if (ptr == MAP_FAILED) {
 			return (ptr);
 		}
+		
+		/* init global on head and last (1st call)*/
 		base->ptr_large = ptr;
-		
-		// (t_data*)base->ptr_large->size = size;
-		// (t_data*)base->ptr_large->free = false;
-		// base->(t_data*)ptr_large->next = NULL;
+		base->lst_large = ptr;
+
+		/* init meta */
+		((t_data *)base->ptr_large)->size = size;
+		((t_data *)base->ptr_large)->free = false;
+		((t_data *)base->ptr_large)->next = NULL;
+		((t_data *)base->ptr_large)->prev = NULL;
+
 	} else { // add alloc as last.
+		ptr = mmap(0, META_DATA + size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1 , 0);
+		if (ptr == MAP_FAILED) {
+			return (ptr);
+		}
 		
+		/* init meta */
+		((t_data *)ptr)->size = size;
+		((t_data *)ptr)->free = false;
+		((t_data *)ptr)->next = NULL;
+		
+		/* change current last with the new mem */
+		((t_data *)ptr)->prev = ((t_data *)base->lst_large);
+		((t_data *)base->lst_large)->next = (t_data *)ptr;
+
+		base->lst_large = ptr;
 	}
 
 	return (ptr);

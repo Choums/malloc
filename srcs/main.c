@@ -13,6 +13,7 @@
 #include "../includes/ft_malloc.h"
 
 int main(void) {
+	// char* str = ft_malloc(ft_strlen("salut"));
 	show_alloc_mem();
 	return (0);
 }

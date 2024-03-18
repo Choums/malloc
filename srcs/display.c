@@ -6,7 +6,7 @@
 /*   By: chaidel <chaidel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 17:20:50 by chaidel           #+#    #+#             */
-/*   Updated: 2024/03/17 18:41:20 by chaidel          ###   ########.fr       */
+/*   Updated: 2024/03/17 18:45:30 by chaidel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	show_alloc_mem()
 	ft_printf("%sLARGE%s : %p\n",BWHI, END, base->ptr_large);
 	total += get_alloc_mem_type(base->ptr_large);
 	
-	ft_printf("Total : %zd bytes\n", total);
+	ft_printf("%sTotal%s : %zd bytes\n",BWHI, END, total);
 }
 
 /**
