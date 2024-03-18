@@ -23,16 +23,18 @@
 # include <pthread.h>
 # include "libft.h"
 
-# define TINY_SIZE	256
-# define SMALL_SIZE	4096
+# define PAGE_SIZE (size_t)getpagesize()
+
+# define TINY_SIZE	PAGE_SIZE * 2
+# define SMALL_SIZE	PAGE_SIZE * 8
 
 # define TINY_ZONE	(size_t)(META_DATA + TINY_SIZE) * 100
 # define SMALL_ZONE	(size_t)(META_DATA + SMALL_SIZE) * 100
 
 /**
  * Define mallocated region by categories.
- * @param tiny “TINY" mallocs, from 1 to 256 bytes, will be stored in TINY_ZONE bytes big zones.
- * @param small “SMALL” mallocs, from (256 + 1) to 4096 bytes, will be stored in SMALL_ZONE bytes big zones.
+ * @param tiny “TINY" mallocs, from 1 to 256 bytes, will be stored in ```TINY_ZONE``` bytes big zones.
+ * @param small “SMALL” mallocs, from (256 + 1) to 4096 bytes, will be stored in ```SMALL_ZONE``` bytes big zones.
  * @param large “LARGE” mallocs, fron (4096 + 1) bytes and more, will be stored out of zone.
  * @note Large mallocs will be in a zone on their own.
 */
@@ -99,10 +101,13 @@ void*	ft_malloc(size_t size);
 
 /**	Allocation **/
 void*	mem_alloc(size_t size);
+size_t	align8(size_t size);
 bool	init_base(void);
-// void*	tiny_alloc(size_t size, TYPE type);
-// void*	small_alloc(size_t size, TYPE type);
+bool	init_zones(TYPE type);
+void*	tiny_alloc(size_t size);
+void*	small_alloc(size_t size);
 void*	large_alloc(size_t size);
+
 
 /** Alloc display functions **/
 

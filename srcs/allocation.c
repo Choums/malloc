@@ -6,11 +6,28 @@
 /*   By: chaidel <chaidel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/06 17:23:56 by chaidel           #+#    #+#             */
-/*   Updated: 2024/03/18 14:56:57 by chaidel          ###   ########.fr       */
+/*   Updated: 2024/03/18 17:13:07 by chaidel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/ft_malloc.h"
+
+/**
+ * @brief Align the ```size``` of the memory block to the meta-data struct on 8 bytes (64 bits).
+ * @param size neccessary memory block.
+ * @return Aligned size.
+ * @note Given any positive integer dividing it by four	and then multiplying it by
+ * 		four again results in the nearest smaller multiple of four, thus to obtain
+ *		the nearest greater multiple of four we only need to add four to it.
+ *		Since size_t type is 8 bytes long, the formula is modified to work with it.
+ *		(bit-shifting (>> and <<) are faster than using the operators).
+ *		(bit-shifting by 3 comes to 2^3 or 8).
+*/
+size_t align8(size_t size)
+{
+	return (((((size - 1) >> 3) << 3)) + 8);
+}
+
 
 /**
  * First call of malloc, allocate space for global heads.
@@ -37,6 +54,37 @@ bool	init_base()
 	return (true);
 }
 
+
+/**
+ * Init only Tiny or Small zones.
+*/
+bool	init_zones(TYPE type)
+{
+	if (type == large) {
+		return (false);
+	}
+
+	if (type == tiny) {
+		base->ptr_tiny = mmap(0, TINY_ZONE, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1 , 0);
+		if (base->ptr_tiny == MAP_FAILED) {
+			return (false);
+		}
+	
+		
+
+	} else {
+		base->ptr_small = mmap(0, SMALL_ZONE, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1 , 0);
+		if (base->ptr_small == MAP_FAILED) {
+			return (false);
+		}
+	}
+
+
+
+	return (true);
+}
+
+
 void* mem_alloc(size_t size)
 {
 	
@@ -46,6 +94,8 @@ void* mem_alloc(size_t size)
 	if (size <= 0) {
 		return (ptr);
 	}
+
+	size = align8(size);
 
 	if (!base) {
 		if (!init_base())
@@ -58,11 +108,11 @@ void* mem_alloc(size_t size)
 	switch (type) {
 	case tiny:
 		printf("TINY ALLOC\n");
-		// ptr = tiny_alloc //TODO: tiny alloc
+		ptr = tiny_alloc(size);
 		break;
 	case small:
 		printf("SMALL ALLOC\n");
-		// ptr = small_alloc //TODO: small alloc
+		ptr = small_alloc(size);
 		break;
 	case large:
 		printf("LARGE ALLOC\n");
@@ -75,45 +125,4 @@ void* mem_alloc(size_t size)
 	}
 
 	return (ptr + META_DATA);
-}
-
-void* large_alloc(size_t size)
-{
-	void* ptr = NULL;
-
-	if (base->ptr_large == NULL) { // head null => alloc will be head.
-		ptr = mmap(0, META_DATA + size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1 , 0);
-		if (ptr == MAP_FAILED) {
-			return (ptr);
-		}
-		
-		/* init global on head and last (1st call)*/
-		base->ptr_large = ptr;
-		base->lst_large = ptr;
-
-		/* init meta */
-		((t_data *)base->ptr_large)->size = size;
-		((t_data *)base->ptr_large)->free = false;
-		((t_data *)base->ptr_large)->next = NULL;
-		((t_data *)base->ptr_large)->prev = NULL;
-
-	} else { // add alloc as last.
-		ptr = mmap(0, META_DATA + size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1 , 0);
-		if (ptr == MAP_FAILED) {
-			return (ptr);
-		}
-		
-		/* init meta */
-		((t_data *)ptr)->size = size;
-		((t_data *)ptr)->free = false;
-		((t_data *)ptr)->next = NULL;
-		
-		/* change current last with the new mem */
-		((t_data *)ptr)->prev = ((t_data *)base->lst_large);
-		((t_data *)base->lst_large)->next = (t_data *)ptr;
-
-		base->lst_large = ptr;
-	}
-
-	return (ptr);
 }

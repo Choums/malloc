@@ -13,6 +13,8 @@
 #include "../includes/ft_malloc.h"
 
 int main(void) {
-	// show_alloc_mem();
+	char* str = ft_malloc(SMALL_ZONE + 1);
+	(void)str;
+	show_alloc_mem();
 	return (0);
 }

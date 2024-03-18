@@ -6,9 +6,10 @@ OBJDIR		=	obj
 
 SRC			=	main.c\
 				malloc.c\
-				allocation.c\
 				finder.c\
 				display.c\
+				allocation.c\
+				typed_allocation.c\
 
 
 OBJ			=	$(addprefix $(OBJDIR)/,$(SRC:.c=.o))
