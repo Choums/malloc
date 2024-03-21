@@ -6,11 +6,12 @@
 /*   By: chaidel <chaidel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/10 17:15:52 by chaidel           #+#    #+#             */
-/*   Updated: 2024/03/18 15:17:30 by chaidel          ###   ########.fr       */
+/*   Updated: 2024/03/21 18:39:33 by chaidel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/ft_malloc.h"
+
 /**
  * Go over the list of chunks until one is free and wide enough.
  * @param head Head of a type. (```base->ptr_```)

@@ -6,7 +6,7 @@
 /*   By: chaidel <chaidel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/06 17:23:56 by chaidel           #+#    #+#             */
-/*   Updated: 2024/03/18 17:13:07 by chaidel          ###   ########.fr       */
+/*   Updated: 2024/03/21 19:34:39 by chaidel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ bool	init_base()
 
 
 /**
- * Init only Tiny or Small zones.
+ * @brief Allocate a first zone Tiny or Small AND init global struct ```t_mptr``` (```base```).
 */
 bool	init_zones(TYPE type)
 {
@@ -69,21 +69,57 @@ bool	init_zones(TYPE type)
 		if (base->ptr_tiny == MAP_FAILED) {
 			return (false);
 		}
-	
+		base->size_tiny = TINY_SIZE;
+		base->lst_tiny = base->ptr_tiny;
 		
+		((t_data *)base->ptr_tiny)->free = true;
+		((t_data *)base->ptr_tiny)->size = TINY_ZONE - META_DATA;
 
 	} else {
 		base->ptr_small = mmap(0, SMALL_ZONE, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1 , 0);
 		if (base->ptr_small == MAP_FAILED) {
 			return (false);
 		}
+		base->size_small = SMALL_SIZE;
+		base->lst_small = base->ptr_small;
+		
+		((t_data *)base->ptr_small)->free = true;
+		((t_data *)base->ptr_small)->size = SMALL_ZONE - META_DATA;
 	}
-
-
 
 	return (true);
 }
 
+/**
+ * @brief Allocate a new zone of type Tiny or Small, update total size of allocation and init the new block.
+ * 
+ * @param type Type of allocation, ```tiny``` OR ```small```.
+ */
+bool	alloc_new_zone(TYPE type)
+{
+	void* ptr = NULL;
+
+	if (type == large) {
+		return (false);
+	}
+	
+	if (type == tiny) {
+		ptr = mmap(0, TINY_ZONE, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1 , 0);
+		if (ptr == MAP_FAILED) {
+			return (false);
+		}
+		base->size_tiny += TINY_ZONE;
+
+	} else {
+		ptr = mmap(0, SMALL_ZONE, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1 , 0);
+		if (ptr == MAP_FAILED) {
+			return (false);
+		}
+		base->size_small += SMALL_ZONE;
+	}
+	//TODO: init meta
+	return (true);
+}
 
 void* mem_alloc(size_t size)
 {

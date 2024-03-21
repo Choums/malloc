@@ -6,7 +6,7 @@
 /*   By: chaidel <chaidel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 17:20:50 by chaidel           #+#    #+#             */
-/*   Updated: 2024/03/18 14:49:09 by chaidel          ###   ########.fr       */
+/*   Updated: 2024/03/20 16:59:47 by chaidel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@
 */
 void	show_alloc_mem()
 {
+	pthread_mutex_lock(&mutex);
+
 	size_t total = 0;
 
 	ft_printf("%sTINY%s  : %p\n",BWHI, END, base->ptr_tiny);
@@ -29,6 +31,8 @@ void	show_alloc_mem()
 	total += get_alloc_mem_type(base->ptr_large);
 	
 	ft_printf("%sTotal%s : %d bytes\n",BWHI, END, total);
+
+	pthread_mutex_unlock(&mutex);
 }
 
 /**

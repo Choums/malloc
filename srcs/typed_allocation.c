@@ -6,7 +6,7 @@
 /*   By: chaidel <chaidel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 17:09:25 by chaidel           #+#    #+#             */
-/*   Updated: 2024/03/18 17:09:50 by chaidel          ###   ########.fr       */
+/*   Updated: 2024/03/21 18:47:20 by chaidel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,8 @@
 
 /**
  * Allocate memory for a large malloc.
- * @param size 
+ * @param size Requested size.
+ * @note Large mallocs will be in a zone of ```size```.
 */
 void* large_alloc(size_t size)
 {
@@ -57,6 +58,10 @@ void* large_alloc(size_t size)
 	return (ptr);
 }
 
+/**
+ * Allocate memory for a large malloc.
+ * @param size Requested size.
+*/
 void*	tiny_alloc(size_t size)
 {
 	void* ptr = NULL;
@@ -71,6 +76,10 @@ void*	tiny_alloc(size_t size)
 	return (ptr);
 }
 
+/**
+ * Allocate memory for a small malloc.
+ * @param size Requested size.
+*/
 void*	small_alloc(size_t size)
 {
 	void*	ptr = NULL;
@@ -80,7 +89,19 @@ void*	small_alloc(size_t size)
 			return (ptr);
 	}
 	
-
+	ptr = get_free_block(base->ptr_small, size);
+	if (ptr) // fitting chunk found
+	{
+		(t_data *)ptr->free = false;
+		
+		if (((t_data *)ptr->size - size - META_DATA) > (META_DATA + SMALL_SIZE)) { // Unused space will be a new block
+			printf("%s--- Spliting ! ---%s\n", BRED, END);
+			split_blocks(ptr, size, &(base->lst_small));
+		}
+		
+	} else { // Allocate a new zone
+		
+	}
 	
 	return (ptr);
 }

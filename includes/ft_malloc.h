@@ -100,10 +100,11 @@ pthread_mutex_t mutex;
 void*	ft_malloc(size_t size);
 
 /**	Allocation **/
-void*	mem_alloc(size_t size);
 size_t	align8(size_t size);
+void*	mem_alloc(size_t size);
 bool	init_base(void);
 bool	init_zones(TYPE type);
+bool	alloc_new_zone(TYPE type);
 void*	tiny_alloc(size_t size);
 void*	small_alloc(size_t size);
 void*	large_alloc(size_t size);
@@ -114,4 +115,7 @@ void*	large_alloc(size_t size);
 void	show_alloc_mem();
 size_t	get_alloc_mem_type(t_data* head);
 
+/**	Utils **/
+t_data*	get_free_block(t_data* head, size_t size);
+void	split_blocks(t_data* ptr, size_t req_size, t_data** last);
 #endif

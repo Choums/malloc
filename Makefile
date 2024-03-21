@@ -5,6 +5,7 @@ INCDIR		=	./includes
 OBJDIR		=	obj
 
 SRC			=	main.c\
+				utils.c\
 				malloc.c\
 				finder.c\
 				display.c\
