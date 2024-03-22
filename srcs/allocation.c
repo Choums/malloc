@@ -6,7 +6,7 @@
 /*   By: chaidel <chaidel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/06 17:23:56 by chaidel           #+#    #+#             */
-/*   Updated: 2024/03/21 19:34:39 by chaidel          ###   ########.fr       */
+/*   Updated: 2024/03/22 16:46:52 by chaidel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,31 +94,48 @@ bool	init_zones(TYPE type)
  * @brief Allocate a new zone of type Tiny or Small, update total size of allocation and init the new block.
  * 
  * @param type Type of allocation, ```tiny``` OR ```small```.
+ * @return ```ptr``` on first block of newly allocated zone.
  */
-bool	alloc_new_zone(TYPE type)
+void*	alloc_new_zone(TYPE type)
 {
 	void* ptr = NULL;
 
 	if (type == large) {
-		return (false);
+		return (NULL);
 	}
 	
 	if (type == tiny) {
 		ptr = mmap(0, TINY_ZONE, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1 , 0);
 		if (ptr == MAP_FAILED) {
-			return (false);
+			return (NULL);
 		}
 		base->size_tiny += TINY_ZONE;
+
+		/* init meta */
+		((t_data *)ptr)->size = TINY_SIZE - META_DATA;
+		((t_data *)ptr)->free = true;
+		((t_data *)ptr)->next = NULL;
+		((t_data *)ptr)->prev = base->lst_tiny;
+		
+		base->lst_tiny = ptr;
 
 	} else {
 		ptr = mmap(0, SMALL_ZONE, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1 , 0);
 		if (ptr == MAP_FAILED) {
-			return (false);
+			return (NULL);
 		}
 		base->size_small += SMALL_ZONE;
+
+		/* init meta */
+		((t_data *)ptr)->size = SMALL_SIZE - META_DATA;
+		((t_data *)ptr)->free = true;
+		((t_data *)ptr)->next = NULL;
+		((t_data *)ptr)->prev = base->lst_small;
+		
+		base->lst_small = ptr;
 	}
-	//TODO: init meta
-	return (true);
+
+	return (ptr);
 }
 
 void* mem_alloc(size_t size)
@@ -156,7 +173,7 @@ void* mem_alloc(size_t size)
 		break;
 	}
 
-	if (ptr == MAP_FAILED) { // Error allocation.
+	if (!ptr || ptr == MAP_FAILED) { // Error allocation.
 		return (NULL);
 	}
 
