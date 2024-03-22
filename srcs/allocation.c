@@ -6,7 +6,7 @@
 /*   By: chaidel <chaidel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/06 17:23:56 by chaidel           #+#    #+#             */
-/*   Updated: 2024/03/22 16:46:52 by chaidel          ###   ########.fr       */
+/*   Updated: 2024/03/22 17:36:50 by chaidel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,21 +154,21 @@ void* mem_alloc(size_t size)
 		if (!init_base())
 			return (NULL);
 	}
-
+	// printf("%s size: %zd | %zd %s\n", RED, size, SMALL_SIZE, END);
 	// Define allocation type according to size.
-	type = (size <= TINY_ZONE) ? tiny : (size <= SMALL_ZONE) ? small : large;
+	type = (size <= TINY_SIZE) ? tiny : (size <= SMALL_SIZE) ? small : large;
 
 	switch (type) {
 	case tiny:
-		printf("TINY ALLOC\n");
+		// printf("TINY ALLOC\n");
 		ptr = tiny_alloc(size);
 		break;
 	case small:
-		printf("SMALL ALLOC\n");
+		// printf("SMALL ALLOC\n");
 		ptr = small_alloc(size);
 		break;
 	case large:
-		printf("LARGE ALLOC\n");
+		// printf("LARGE ALLOC\n");
 		ptr = large_alloc(size);
 		break;
 	}

@@ -14,13 +14,13 @@
 
 /**
  * @brief When a chunk is wide enough to held the asked size plus a new chunk 
- * (at least ```META_DATA``` + ```TINY_SIZE```), we insert a new chunk in the list.
+ * (at least ```META_DATA``` + ```TYPE_SIZE```), we insert a new chunk in the list.
  * 
  * @param ptr Pointer on block to be split.
  * @param req_size Requested size during allocation.
  * @param last Last block of a type.
  */
-void	split_blocks(t_data* ptr, size_t req_size, t_data** last)
+void	split_blocks(t_data* ptr, size_t req_size, t_data* last)
 {
 	t_data*	new; // Unused space to be a block.
 	t_data*	next; // Saves next block after the new.
@@ -39,6 +39,7 @@ void	split_blocks(t_data* ptr, size_t req_size, t_data** last)
 
 	if (next) {
 		next->prev = new;
+		(void)last;
 	} else { // Add the new block as last of the list.
 		last = new;
 	}

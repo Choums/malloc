@@ -25,8 +25,8 @@
 
 # define PAGE_SIZE (size_t)getpagesize()
 
-# define TINY_SIZE	PAGE_SIZE * 2
-# define SMALL_SIZE	PAGE_SIZE * 8
+# define TINY_SIZE	PAGE_SIZE
+# define SMALL_SIZE	PAGE_SIZE * 4
 
 # define TINY_ZONE	(size_t)(META_DATA + TINY_SIZE) * 100
 # define SMALL_ZONE	(size_t)(META_DATA + SMALL_SIZE) * 100
@@ -117,5 +117,5 @@ size_t	get_alloc_mem_type(t_data* head);
 
 /**	Utils **/
 t_data*	get_free_block(t_data* head, size_t size);
-void	split_blocks(t_data* ptr, size_t req_size, t_data** last);
+void	split_blocks(t_data* ptr, size_t req_size, t_data* last);
 #endif

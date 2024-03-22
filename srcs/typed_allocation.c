@@ -6,7 +6,7 @@
 /*   By: chaidel <chaidel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 17:09:25 by chaidel           #+#    #+#             */
-/*   Updated: 2024/03/22 16:43:45 by chaidel          ###   ########.fr       */
+/*   Updated: 2024/03/22 17:36:34 by chaidel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,11 +77,10 @@ void*	tiny_alloc(size_t size)
 	ptr = get_free_block(base->ptr_tiny, size);
 	if (ptr) // fitting chunk found
 	{
-		(t_data *)ptr->free = false;
+		((t_data *)ptr)->free = false;
 		
-		if (((t_data *)ptr->size - size - META_DATA) > (META_DATA + TINY_SIZE)) { // Unused space will be a new block.
-			printf("%s--- Spliting ! ---%s\n", BRED, END);
-			split_blocks(ptr, size, &(base->lst_tiny));
+		if ((((t_data *)ptr)->size - size - META_DATA) > (META_DATA + TINY_SIZE)) { // Unused space will be a new block.
+			split_blocks(ptr, size, ((t_data *)base->lst_tiny));
 		}
 		
 	} else { // Allocate a new zone
@@ -114,11 +113,11 @@ void*	small_alloc(size_t size)
 	ptr = get_free_block(base->ptr_small, size);
 	if (ptr) // fitting chunk found
 	{
-		(t_data *)ptr->free = false;
+		((t_data *)ptr)->free = false;
 		
-		if (((t_data *)ptr->size - size - META_DATA) > (META_DATA + SMALL_SIZE)) { // Unused space will be a new block.
+		if ((((t_data *)ptr)->size - size - META_DATA) > (META_DATA + SMALL_SIZE)) { // Unused space will be a new block.
 			printf("%s--- Spliting ! ---%s\n", BRED, END);
-			split_blocks(ptr, size, &(base->lst_small));
+			split_blocks(ptr, size, ((t_data *)base->lst_small));
 		}
 		
 	} else { // Allocate a new zone
