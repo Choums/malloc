@@ -6,15 +6,15 @@
 /*   By: chaidel <chaidel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/06 17:23:56 by chaidel           #+#    #+#             */
-/*   Updated: 2024/03/22 17:36:50 by chaidel          ###   ########.fr       */
+/*   Updated: 2024/03/23 17:21:49 by chaidel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/ft_malloc.h"
 
 /**
- * @brief Align the ```size``` of the memory block to the meta-data struct on 8 bytes (64 bits).
- * @param size neccessary memory block.
+ * @brief Align the ```size``` of the memory chunk to the meta-data struct on 8 bytes (64 bits).
+ * @param size neccessary memory chunk.
  * @return Aligned size.
  * @note Given any positive integer dividing it by four	and then multiplying it by
  * 		four again results in the nearest smaller multiple of four, thus to obtain
@@ -91,10 +91,10 @@ bool	init_zones(TYPE type)
 }
 
 /**
- * @brief Allocate a new zone of type Tiny or Small, update total size of allocation and init the new block.
+ * @brief Allocate a new zone of type Tiny or Small, update total size of allocation and init the new chunk.
  * 
  * @param type Type of allocation, ```tiny``` OR ```small```.
- * @return ```ptr``` on first block of newly allocated zone.
+ * @return ```ptr``` on first chunk of newly allocated zone.
  */
 void*	alloc_new_zone(TYPE type)
 {

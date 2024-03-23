@@ -6,7 +6,7 @@
 /*   By: chaidel <chaidel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 17:09:25 by chaidel           #+#    #+#             */
-/*   Updated: 2024/03/22 17:36:34 by chaidel          ###   ########.fr       */
+/*   Updated: 2024/03/23 17:21:49 by chaidel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,8 +61,8 @@ void* large_alloc(size_t size)
 /**
  * Allocate memory for a tiny malloc.
  * @param size Requested size.
- * @return ```ptr``` on a block of requested size.
- * @note Recursive is set to split the block inside the newly allocated zone.
+ * @return ```ptr``` on a chunk of requested size.
+ * @note Recursive is set to split the chunk inside the newly allocated zone.
  * 	
 */
 void*	tiny_alloc(size_t size)
@@ -79,7 +79,7 @@ void*	tiny_alloc(size_t size)
 	{
 		((t_data *)ptr)->free = false;
 		
-		if ((((t_data *)ptr)->size - size - META_DATA) > (META_DATA + TINY_SIZE)) { // Unused space will be a new block.
+		if ((((t_data *)ptr)->size - size - META_DATA) > (META_DATA + TINY_SIZE)) { // Unused space will be a new chunk.
 			split_blocks(ptr, size, ((t_data *)base->lst_tiny));
 		}
 		
@@ -88,7 +88,7 @@ void*	tiny_alloc(size_t size)
 		if (!ptr) {
 			return (NULL);
 		}
-		return (tiny_alloc(size)); // Recursion to split the block from allocation.
+		return (tiny_alloc(size)); // Recursion to split the chunk from allocation.
 	}
 
 	return (ptr);
@@ -97,8 +97,8 @@ void*	tiny_alloc(size_t size)
 /**
  * Allocate memory for a small malloc.
  * @param size Requested size.
- * @return ```ptr``` on a block of requested size.
- * @note Recursive is set to split the block inside the newly allocated zone.
+ * @return ```ptr``` on a chunk of requested size.
+ * @note Recursive is set to split the chunk inside the newly allocated zone.
  * 	
 */
 void*	small_alloc(size_t size)
@@ -115,7 +115,7 @@ void*	small_alloc(size_t size)
 	{
 		((t_data *)ptr)->free = false;
 		
-		if ((((t_data *)ptr)->size - size - META_DATA) > (META_DATA + SMALL_SIZE)) { // Unused space will be a new block.
+		if ((((t_data *)ptr)->size - size - META_DATA) > (META_DATA + SMALL_SIZE)) { // Unused space will be a new chunk.
 			printf("%s--- Spliting ! ---%s\n", BRED, END);
 			split_blocks(ptr, size, ((t_data *)base->lst_small));
 		}
@@ -125,7 +125,7 @@ void*	small_alloc(size_t size)
 		if (!ptr) {
 			return (NULL);
 		}
-		return (small_alloc(size)); // Recursion to split the block from allocation.
+		return (small_alloc(size)); // Recursion to split the chunk from allocation.
 	}
 	
 	return (ptr);

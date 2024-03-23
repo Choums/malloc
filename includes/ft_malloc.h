@@ -63,7 +63,7 @@ struct s_mptr {
 typedef struct s_mptr t_mptr;
 
 /**
- * Global variable on heads of mallocated regions.
+ * Global variable on heads and tails of mallocated regions.
  * @param ptr_ Pointers on the head of the allocations (first meta).
  * @param size_ Total size of allocation type.
  * @param lst_ Pointers on the end of the allocaitons (last meta).
@@ -79,7 +79,7 @@ struct s_data {
 };
 
 /**
- *  @brief Header block before each chunks containing information.
+ *  @brief Header chunk before each chunks containing information.
  * 	@param free Flag to mark whether it's free or not.
  *	@param size The size of the chunk.
  *	@param next Ptr to the next chunk.
@@ -92,14 +92,16 @@ typedef struct s_data t_data;
 */
 # define META_DATA sizeof(t_data)
 
-/** Thread safety. **/
+/** --	Thread safety.	-- **/
 
 pthread_mutex_t mutex;
 
 
 void*	ft_malloc(size_t size);
+void	ft_free(void* ptr);
 
-/**	Allocation **/
+/** --	Allocation	-- **/
+
 size_t	align8(size_t size);
 void*	mem_alloc(size_t size);
 bool	init_base(void);
@@ -109,13 +111,22 @@ void*	tiny_alloc(size_t size);
 void*	small_alloc(size_t size);
 void*	large_alloc(size_t size);
 
+/** --	Free	-- **/
 
-/** Alloc display functions **/
+void	large_free(t_data* ptr);
+
+/** --	Display	 -- **/
 
 void	show_alloc_mem();
 size_t	get_alloc_mem_type(t_data* head);
 
-/**	Utils **/
+/**	--	Finders	-- **/
+
 t_data*	get_free_block(t_data* head, size_t size);
+t_data*	find_block(void* ptr);
+
+/**	--	Utils	-- **/
+
 void	split_blocks(t_data* ptr, size_t req_size, t_data* last);
+void	fusion_blocks(t_data* ptr);
 #endif
