@@ -73,7 +73,10 @@ bool	init_zones(TYPE type)
 		base->lst_tiny = base->ptr_tiny;
 		
 		((t_data *)base->ptr_tiny)->free = true;
+		((t_data *)base->ptr_tiny)->head = true;
 		((t_data *)base->ptr_tiny)->size = TINY_ZONE - META_DATA;
+
+		printf("ptr->size = %lu\n", TINY_ZONE - META_DATA);
 
 	} else {
 		base->ptr_small = mmap(0, SMALL_ZONE, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1 , 0);
@@ -84,6 +87,7 @@ bool	init_zones(TYPE type)
 		base->lst_small = base->ptr_small;
 		
 		((t_data *)base->ptr_small)->free = true;
+		((t_data *)base->ptr_small)->head = true;
 		((t_data *)base->ptr_small)->size = SMALL_ZONE - META_DATA;
 	}
 
@@ -114,11 +118,12 @@ void*	alloc_new_zone(TYPE type)
 		/* init meta */
 		((t_data *)ptr)->size = TINY_SIZE - META_DATA;
 		((t_data *)ptr)->free = true;
+		((t_data *)ptr)->head = true;
 		((t_data *)ptr)->next = NULL;
-		((t_data *)ptr)->prev = base->lst_tiny;
+		((t_data *)ptr)->prev = lst_last_base((t_data *)(base->lst_tiny));
 		
 		base->lst_tiny = ptr;
-
+		printf("%salloc_new_zone()::TINY => base : %p | base lst : %p%s\n", BWHI, &(base->ptr_tiny), &ptr, END);
 	} else {
 		ptr = mmap(0, SMALL_ZONE, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1 , 0);
 		if (ptr == MAP_FAILED) {
@@ -129,8 +134,9 @@ void*	alloc_new_zone(TYPE type)
 		/* init meta */
 		((t_data *)ptr)->size = SMALL_SIZE - META_DATA;
 		((t_data *)ptr)->free = true;
+		((t_data *)ptr)->head = true;
 		((t_data *)ptr)->next = NULL;
-		((t_data *)ptr)->prev = base->lst_small;
+		((t_data *)ptr)->prev = lst_last_base((t_data *)(base->lst_small));
 		
 		base->lst_small = ptr;
 	}
@@ -155,12 +161,14 @@ void* mem_alloc(size_t size)
 			return (NULL);
 	}
 	// printf("%s size: %zd | %zd %s\n", RED, size, SMALL_SIZE, END);
+	
 	// Define allocation type according to size.
 	type = (size <= TINY_SIZE) ? tiny : (size <= SMALL_SIZE) ? small : large;
 
 	switch (type) {
 	case tiny:
 		// printf("TINY ALLOC\n");
+		printf("mem_alloc::size=%lu\n", size);
 		ptr = tiny_alloc(size);
 		break;
 	case small:

@@ -26,11 +26,12 @@ void	ft_free(void* ptr)
 	tmp = ptr - META_DATA; // Gets ptr pointed on MD.
 
 	// Define type according to size.
-	type = (((t_data *)ptr)->size <= TINY_SIZE) ? tiny : (((t_data *)ptr)->size <= SMALL_SIZE) ? small : large;
-	printf("-- find type: %d --\n", type);
+	type = (tmp->size <= TINY_SIZE) ? tiny : (tmp->size <= SMALL_SIZE) ? small : large;
 
-	if (tmp != large) {
+	// printf("-- find type: %d --\n", type);
 
+	if (type != large) {
+		tiny_small_free(tmp, type);
 	} else {
 		large_free(tmp);
 	}

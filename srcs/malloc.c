@@ -13,6 +13,7 @@
 #include "../includes/ft_malloc.h"
 
 t_mptr* base  = NULL;
+pthread_mutex_t mutex;
 
 void* ft_malloc(size_t size)
 {
@@ -22,6 +23,7 @@ void* ft_malloc(size_t size)
 		pthread_mutex_init(&mutex, NULL);
 	pthread_mutex_lock(&mutex);
 
+	printf("ft_malloc::size=%lu\n", size);
 	ptr = mem_alloc(size);
 	
 	pthread_mutex_unlock(&mutex);

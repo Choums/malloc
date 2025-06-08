@@ -32,7 +32,7 @@
 # define SMALL_ZONE	(size_t)(META_DATA + SMALL_SIZE) * 100
 
 /**
- * Define mallocated region by categories.
+ * Define mallocated region/zone by categories.
  * @param tiny “TINY" mallocs, from 1 to 256 bytes, will be stored in ```TINY_ZONE``` bytes big zones.
  * @param small “SMALL” mallocs, from (256 + 1) to 4096 bytes, will be stored in ```SMALL_ZONE``` bytes big zones.
  * @param large “LARGE” mallocs, fron (4096 + 1) bytes and more, will be stored out of zone.
@@ -76,12 +76,14 @@ struct s_data {
 	struct s_data* next;
 	struct s_data* prev;
 	bool free;
+	bool head;
 };
 
 /**
- *  @brief Header chunk before each chunks containing information.
+ *  @brief Header chunk/block before each chunks containing information.
  * 	@param free Flag to mark whether it's free or not.
- *	@param size The size of the chunk.
+ *	@param size The size of the chunk. !! size DOES NOT take account of the MD size !!
+ *	@param head Define this alloc as the first of a zone.
  *	@param next Ptr to the next chunk.
  *	@param prev Ptr to previous chunk.
  */
@@ -94,7 +96,7 @@ typedef struct s_data t_data;
 
 /** --	Thread safety.	-- **/
 
-pthread_mutex_t mutex;
+extern pthread_mutex_t mutex;
 
 
 void*	ft_malloc(size_t size);
@@ -114,6 +116,7 @@ void*	large_alloc(size_t size);
 /** --	Free	-- **/
 
 void	large_free(t_data* ptr);
+void	tiny_small_free(t_data* ptr, TYPE type);
 
 /** --	Display	 -- **/
 
@@ -127,6 +130,9 @@ t_data*	find_block(void* ptr);
 
 /**	--	Utils	-- **/
 
-void	split_blocks(t_data* ptr, size_t req_size, t_data* last);
+void	split_blocks(t_data* ptr, size_t req_size);
 void	fusion_blocks(t_data* ptr);
+t_data	*lst_last_base(t_data *lst);
+
+
 #endif

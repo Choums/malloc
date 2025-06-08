@@ -5,18 +5,19 @@ INCDIR		=	./includes
 OBJDIR		=	obj
 
 SRC			=	main.c\
+				free.c\
 				utils.c\
 				malloc.c\
 				finder.c\
 				display.c\
 				allocation.c\
+				typed_free.c\
 				typed_allocation.c\
-
 
 OBJ			=	$(addprefix $(OBJDIR)/,$(SRC:.c=.o))
 
 CC			=	gcc
-CFLAGS		=	-std=gnu99 -g -Wall -Wextra #-Werror -fsanitize=address #-static-libasan
+CFLAGS		=	-std=gnu99 -g -Wall -Wextra -Werror -lrt -lpthread  #-fsanitize=address #-static-libasan
 
 FT			=	./libft/
 FT_LIB		=	$(addprefix $(FT),libft.a)

@@ -21,8 +21,10 @@ void	show_alloc_mem()
 
 	size_t total = 0;
 
-	ft_printf("%sTINY%s  : %p\n",BWHI, END, base->ptr_tiny);
-	total += get_alloc_mem_type(base->ptr_tiny);
+	ft_printf("%sMETA DATA%s  : %x (hex)\n",BBLU, END, META_DATA);
+
+	ft_printf("%sTINY%s  : %p : %d bytes.\n",BWHI, END, base->ptr_tiny, base->size_tiny);
+	total += get_alloc_mem_type((t_data*)base->ptr_tiny);
 	
 	ft_printf("%sSMALL%s : %p\n",BWHI, END, base->ptr_small);
 	total += get_alloc_mem_type(base->ptr_small);
@@ -49,8 +51,8 @@ size_t	get_alloc_mem_type(t_data* head)
 	
 	while (head) {
 		if (!head->free) { // Display only used mem
-			ft_printf("%p - %p\t: %d %sbytes%s.\n", (void *)head + META_DATA, (void *)head + META_DATA + head->size, head->size, BWHI, END); // head + META-DATA => start ptr chunk | (void*)head + META_DATA + head->size => end ptr of chunk
-			
+			ft_printf("%p - %p\t: %d bytes.\n", (void *)head + META_DATA, (void *)head + head->size, head->size); // head + META-DATA => start ptr chunk | (void*)head + META_DATA + head->size => end ptr of chunk
+
 			total += head->size;
 		}
 		head = head->next;

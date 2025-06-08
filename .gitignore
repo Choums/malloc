@@ -1,2 +1,5 @@
 *.o
 .vscode
+.*
+ft_malloc
+*.a

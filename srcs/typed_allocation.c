@@ -73,14 +73,15 @@ void*	tiny_alloc(size_t size)
 		if (!init_zones(tiny))
 			return (ptr);
 	}
-
 	ptr = get_free_block(base->ptr_tiny, size);
 	if (ptr) // fitting chunk found
 	{
 		((t_data *)ptr)->free = false;
-		
-		if ((((t_data *)ptr)->size - size - META_DATA) > (META_DATA + TINY_SIZE)) { // Unused space will be a new chunk.
-			split_blocks(ptr, size, ((t_data *)base->lst_tiny));
+
+		if ((((t_data *)ptr)->size - size - META_DATA) > (META_DATA)) { // Unused space will be a new chunk.
+			printf("%s--- Spliting Tiny ! ---%s\n", BRED, END);
+
+			split_blocks(ptr, size);
 		}
 		
 	} else { // Allocate a new zone
@@ -114,10 +115,11 @@ void*	small_alloc(size_t size)
 	if (ptr) // fitting chunk found
 	{
 		((t_data *)ptr)->free = false;
-		
-		if ((((t_data *)ptr)->size - size - META_DATA) > (META_DATA + SMALL_SIZE)) { // Unused space will be a new chunk.
-			printf("%s--- Spliting ! ---%s\n", BRED, END);
-			split_blocks(ptr, size, ((t_data *)base->lst_small));
+
+		if ((((t_data *)ptr)->size - size - META_DATA) > (META_DATA)) { // Unused space will be a new chunk.
+			printf("%s--- Spliting Small ! ---%s\n", BRED, END);
+
+			split_blocks(ptr, size);
 		}
 		
 	} else { // Allocate a new zone

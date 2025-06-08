@@ -20,10 +20,12 @@
  * @param req_size Requested size during allocation.
  * @param last Last chunk of a type.
  */
-void	split_blocks(t_data* ptr, size_t req_size, t_data* last)
+void	split_blocks(t_data* ptr, size_t req_size)
 {
 	t_data*	new; // Unused space to be a chunk.
 	t_data*	next; // Saves next chunk after the new.
+
+	printf("split_blocks::size=%lu\n", req_size);
 
 	new = (void *)ptr + META_DATA + req_size; // Point on unused space start.
 	next = ptr->next;
@@ -35,21 +37,15 @@ void	split_blocks(t_data* ptr, size_t req_size, t_data* last)
 	new->next = next;
 	new->prev = ptr;
 
-	ptr->size = req_size; // Mis a jour du chunk demandé.
+	ptr->size = META_DATA + req_size; // Mis a jour du chunk demandé.
 
-	if (next) {
+	if (next)
 		next->prev = new;
-		(void)last;
-	} else { // Add the new chunk as last of the list.
-		last = new;
-	}
 }
 
 /**
  * @brief Merge two free chunk.
  * @param ptr Pointer on a free chunk. (next chunk must be free aswell)
- * @note If chunks are not merge after many ```malloc``` and ```free```,
- * 	it may cause memory fragmentation. 
  */
 void	fusion_blocks(t_data* ptr)
 {
@@ -62,4 +58,13 @@ void	fusion_blocks(t_data* ptr)
 		}
 	}
 
+}
+
+t_data	*lst_last_base(t_data *lst)
+{
+	if (!lst)
+		return (NULL);
+	while (lst->next)
+		lst = lst->next;
+	return (lst);
 }
