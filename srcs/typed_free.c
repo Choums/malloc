@@ -13,9 +13,9 @@
 #include "../includes/ft_malloc.h"
 
 /**
- * @brief Frees large allocation and rewire large linked list.
+ * @brief Frees LARGE allocation and rewire LARGE linked list.
  * 
- * @param ptr Pointer on large mem META_DATA to be freed. 
+ * @param ptr Pointer on LARGE mem META_DATA to be freed. 
  */
 void	large_free(t_data* ptr)
 {
@@ -45,23 +45,23 @@ void	tiny_small_free(t_data* ptr, TYPE type)
 
 	/**	---- Prev is free ----	**/
 	if (!ptr->head && ptr->prev && ptr->prev->free) {
-		printf("Prev is free !\n");
+		// printf("Prev is free !\n");
 		ptr = ptr->prev; // current ptr won't "exist" after the fusion, the prev becomes now the current
 		fusion_blocks(ptr);
 	}
 
 	/**	---- next is free ----	**/
 	if (ptr->next && !ptr->next->head && ptr->next->free) {
-		printf("next is free !\n");
+		// printf("next is free !\n");
 		fusion_blocks(ptr);
 	}
 
 	/**	---- End of zone ----	**/
 	if (ptr->head) {
-		printf("HEAD !\n");
+		// printf("HEAD !\n");
 		if ((ptr->next && ptr->next->head) || (!ptr->next))
 		{
-			printf("End of zone !\n");
+			// printf("End of zone !\n");
 
 			/**	---- Rewiring ----	**/
 			if (ptr->next)
@@ -69,9 +69,9 @@ void	tiny_small_free(t_data* ptr, TYPE type)
 			if (ptr->prev)
 				ptr->prev->next = ptr->next;
 
-			if (type == tiny)
+			if (type == TINY)
 			{
-				printf("liberating tiny zone!\n");
+				// printf("liberating TINY zone!\n");
 				if (base->ptr_tiny == ptr)
 					base->ptr_tiny = ptr->next;
 				else if (base->lst_tiny == ptr)
@@ -80,12 +80,13 @@ void	tiny_small_free(t_data* ptr, TYPE type)
 
 				munmap(ptr, TINY_ZONE);
 			} else {
-				printf("liberating small zone!\n");
+				// printf("liberating SMALL zone!\n");
 				if (base->ptr_small == ptr)
 					base->ptr_small = ptr->next;
 				else if (base->lst_small == ptr)
 					base->lst_small = ptr->prev;
 				base->size_tiny -= SMALL_ZONE;
+				
 				munmap(ptr, SMALL_ZONE);
 			}
 		}

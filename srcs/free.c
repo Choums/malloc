@@ -12,7 +12,7 @@
 
 #include "../includes/ft_malloc.h"
 
-void	ft_free(void* ptr)
+void	free(void* ptr)
 {
 	t_data* tmp = NULL;
 	TYPE	type;
@@ -26,11 +26,11 @@ void	ft_free(void* ptr)
 	tmp = ptr - META_DATA; // Gets ptr pointed on MD.
 
 	// Define type according to size.
-	type = (tmp->size <= TINY_SIZE) ? tiny : (tmp->size <= SMALL_SIZE) ? small : large;
+	type = (tmp->size <= TINY_SIZE) ? TINY : (tmp->size <= SMALL_SIZE) ? SMALL : LARGE;
 
 	// printf("-- find type: %d --\n", type);
 
-	if (type != large) {
+	if (type != LARGE) {
 		tiny_small_free(tmp, type);
 	} else {
 		large_free(tmp);

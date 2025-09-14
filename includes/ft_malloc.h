@@ -25,23 +25,28 @@
 
 # define PAGE_SIZE (size_t)getpagesize()
 
-# define TINY_SIZE	PAGE_SIZE
-# define SMALL_SIZE	PAGE_SIZE * 4
+/**
+ * Size of meta-data (header) information.
+*/
+# define META_DATA sizeof(t_data)
 
-# define TINY_ZONE	(size_t)(META_DATA + TINY_SIZE) * 100
-# define SMALL_ZONE	(size_t)(META_DATA + SMALL_SIZE) * 100
+# define TINY_SIZE	(PAGE_SIZE / (64))
+# define SMALL_SIZE	(PAGE_SIZE / (16))
+
+# define TINY_ZONE	(size_t)((TINY_SIZE + META_DATA) * 100)
+# define SMALL_ZONE	(size_t)((SMALL_SIZE + META_DATA) * 100)
 
 /**
  * Define mallocated region/zone by categories.
- * @param tiny “TINY" mallocs, from 1 to 256 bytes, will be stored in ```TINY_ZONE``` bytes big zones.
- * @param small “SMALL” mallocs, from (256 + 1) to 4096 bytes, will be stored in ```SMALL_ZONE``` bytes big zones.
- * @param large “LARGE” mallocs, fron (4096 + 1) bytes and more, will be stored out of zone.
+ * @param TINY “TINY" mallocs, from 1 to 64 bytes, will be stored in ```TINY_ZONE``` bytes big zones.
+ * @param SMALL “SMALL” mallocs, from (64 + 1) to 256 bytes, will be stored in ```SMALL_ZONE``` bytes big zones.
+ * @param LARGE “LARGE” mallocs, fron (256 + 1) bytes and more, will be stored out of zone.
  * @note Large mallocs will be in a zone on their own.
 */
 typedef enum TYPE {
-	tiny,
-	small,
-	large
+	TINY,
+	SMALL,
+	LARGE
 } TYPE;
 
 
@@ -89,11 +94,6 @@ struct s_data {
  */
 typedef struct s_data t_data;
 
-/**
- * Size of meta-data (header) information.
-*/
-# define META_DATA sizeof(t_data)
-
 /** --	Thread safety.	-- **/
 
 extern pthread_mutex_t mutex;
@@ -112,6 +112,11 @@ void*	alloc_new_zone(TYPE type);
 void*	tiny_alloc(size_t size);
 void*	small_alloc(size_t size);
 void*	large_alloc(size_t size);
+
+/** --	Realloc	-- **/
+
+void*   smaller_realloc(t_data* meta_ptr, size_t size);
+void*   larger_realloc(t_data* ptr, t_data* meta_ptr, size_t size);
 
 /** --	Free	-- **/
 
@@ -134,5 +139,5 @@ void	split_blocks(t_data* ptr, size_t req_size);
 void	fusion_blocks(t_data* ptr);
 t_data	*lst_last_base(t_data *lst);
 
-
+char*	get_value(void* start, void* end);
 #endif

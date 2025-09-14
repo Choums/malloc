@@ -1,13 +1,13 @@
 NAME    	=	ft_malloc
+NAME_LINK	=	lib_malloc.so
 
 SRCDIR		=	./srcs
 INCDIR		=	./includes
 OBJDIR		=	obj
 
-SRC			=	main.c\
+SRC			=	malloc.c\
 				free.c\
 				utils.c\
-				malloc.c\
 				finder.c\
 				display.c\
 				allocation.c\
@@ -17,7 +17,7 @@ SRC			=	main.c\
 OBJ			=	$(addprefix $(OBJDIR)/,$(SRC:.c=.o))
 
 CC			=	gcc
-CFLAGS		=	-std=gnu99 -g -Wall -Wextra -Werror -lrt -lpthread  #-fsanitize=address #-static-libasan
+CFLAGS		=	-std=gnu99 -g -Wall -Wextra -Werror -lrt -lpthread  #-fsanitize=address -static-libasan
 
 FT			=	./libft/
 FT_LIB		=	$(addprefix $(FT),libft.a)
@@ -35,14 +35,20 @@ $(FT_LIB):
 				make -C $(FT)
 
 $(NAME):		$(OBJ)
-				$(CC) $(CFLAGS) $(OBJ) $(FT_LIB) -o $(NAME)
+				rm -f $(NAME_LINK)
+				ar -rc $(NAME) $(OBJ)
+				ranlib $(NAME)
+				ln -s $(NAME) $(NAME_LINK)
+
+test:			$(NAME_LINK) $(FT_LIB)
+				$(CC) src_test/*.c -I $(INCDIR) $(FT_INC) -L. -l_malloc $(FT_LIB) -o test_malloc
 
 clean:
 				rm -rf $(OBJDIR)
 				make -C $(FT) clean
 
 fclean:			clean
-				rm -rf $(NAME)
+				rm -rf $(NAME) $(NAME_LINK) test_malloc
 				make -C $(FT) fclean
 
 re: fclean all

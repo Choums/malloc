@@ -25,7 +25,7 @@ void	split_blocks(t_data* ptr, size_t req_size)
 	t_data*	new; // Unused space to be a chunk.
 	t_data*	next; // Saves next chunk after the new.
 
-	printf("split_blocks::size=%lu\n", req_size);
+	// printf("split_blocks::size=%lu & allsize%lu\n", req_size, ptr->size);
 
 	new = (void *)ptr + META_DATA + req_size; // Point on unused space start.
 	next = ptr->next;
@@ -37,7 +37,7 @@ void	split_blocks(t_data* ptr, size_t req_size)
 	new->next = next;
 	new->prev = ptr;
 
-	ptr->size = META_DATA + req_size; // Mis a jour du chunk demandé.
+	ptr->size = req_size; // Mis a jour du chunk demandé.
 
 	if (next)
 		next->prev = new;

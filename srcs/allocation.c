@@ -60,30 +60,32 @@ bool	init_base()
 */
 bool	init_zones(TYPE type)
 {
-	if (type == large) {
+	if (type == LARGE) {
 		return (false);
 	}
 
-	if (type == tiny) {
+	if (type == TINY) {
 		base->ptr_tiny = mmap(0, TINY_ZONE, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1 , 0);
 		if (base->ptr_tiny == MAP_FAILED) {
 			return (false);
 		}
-		base->size_tiny = TINY_SIZE;
-		base->lst_tiny = base->ptr_tiny;
+		base->size_tiny = TINY_ZONE;
 		
 		((t_data *)base->ptr_tiny)->free = true;
 		((t_data *)base->ptr_tiny)->head = true;
 		((t_data *)base->ptr_tiny)->size = TINY_ZONE - META_DATA;
-
-		printf("ptr->size = %lu\n", TINY_ZONE - META_DATA);
+		((t_data *)base->ptr_tiny)->prev = NULL;
+		((t_data *)base->ptr_tiny)->next = NULL;
+		
+		base->lst_tiny = base->ptr_tiny;
+		// printf("ptr->size = %lu\n", TINY_ZONE - META_DATA);
 
 	} else {
 		base->ptr_small = mmap(0, SMALL_ZONE, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1 , 0);
 		if (base->ptr_small == MAP_FAILED) {
 			return (false);
 		}
-		base->size_small = SMALL_SIZE;
+		base->size_small = SMALL_ZONE;
 		base->lst_small = base->ptr_small;
 		
 		((t_data *)base->ptr_small)->free = true;
@@ -97,18 +99,18 @@ bool	init_zones(TYPE type)
 /**
  * @brief Allocate a new zone of type Tiny or Small, update total size of allocation and init the new chunk.
  * 
- * @param type Type of allocation, ```tiny``` OR ```small```.
+ * @param type Type of allocation, ```TINY``` OR ```SMALL```.
  * @return ```ptr``` on first chunk of newly allocated zone.
  */
 void*	alloc_new_zone(TYPE type)
 {
 	void* ptr = NULL;
 
-	if (type == large) {
+	if (type == LARGE) {
 		return (NULL);
 	}
-	
-	if (type == tiny) {
+
+	if (type == TINY) {
 		ptr = mmap(0, TINY_ZONE, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1 , 0);
 		if (ptr == MAP_FAILED) {
 			return (NULL);
@@ -116,14 +118,16 @@ void*	alloc_new_zone(TYPE type)
 		base->size_tiny += TINY_ZONE;
 
 		/* init meta */
-		((t_data *)ptr)->size = TINY_SIZE - META_DATA;
+		((t_data *)ptr)->size = TINY_ZONE - META_DATA;
 		((t_data *)ptr)->free = true;
 		((t_data *)ptr)->head = true;
 		((t_data *)ptr)->next = NULL;
-		((t_data *)ptr)->prev = lst_last_base((t_data *)(base->lst_tiny));
-		
+
+		t_data* last = lst_last_base((t_data *)(base->lst_tiny)); // Make the last chunk point on the new one.
+		last->next = (t_data *)ptr;
+		((t_data *)ptr)->prev = last;
+
 		base->lst_tiny = ptr;
-		printf("%salloc_new_zone()::TINY => base : %p | base lst : %p%s\n", BWHI, &(base->ptr_tiny), &ptr, END);
 	} else {
 		ptr = mmap(0, SMALL_ZONE, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1 , 0);
 		if (ptr == MAP_FAILED) {
@@ -132,11 +136,14 @@ void*	alloc_new_zone(TYPE type)
 		base->size_small += SMALL_ZONE;
 
 		/* init meta */
-		((t_data *)ptr)->size = SMALL_SIZE - META_DATA;
+		((t_data *)ptr)->size = SMALL_ZONE - META_DATA;
 		((t_data *)ptr)->free = true;
 		((t_data *)ptr)->head = true;
 		((t_data *)ptr)->next = NULL;
-		((t_data *)ptr)->prev = lst_last_base((t_data *)(base->lst_small));
+
+		t_data* last = lst_last_base((t_data *)(base->lst_small)); // Make the last chunk point on the new one.
+		last->next = (t_data *)ptr;
+		((t_data *)ptr)->prev = last;
 		
 		base->lst_small = ptr;
 	}
@@ -160,23 +167,18 @@ void* mem_alloc(size_t size)
 		if (!init_base())
 			return (NULL);
 	}
-	// printf("%s size: %zd | %zd %s\n", RED, size, SMALL_SIZE, END);
 	
 	// Define allocation type according to size.
-	type = (size <= TINY_SIZE) ? tiny : (size <= SMALL_SIZE) ? small : large;
+	type = (size <= TINY_SIZE) ? TINY : (size <= SMALL_SIZE) ? SMALL : LARGE;
 
 	switch (type) {
-	case tiny:
-		// printf("TINY ALLOC\n");
-		printf("mem_alloc::size=%lu\n", size);
+	case TINY:
 		ptr = tiny_alloc(size);
 		break;
-	case small:
-		// printf("SMALL ALLOC\n");
+	case SMALL:
 		ptr = small_alloc(size);
 		break;
-	case large:
-		// printf("LARGE ALLOC\n");
+	case LARGE:
 		ptr = large_alloc(size);
 		break;
 	}

@@ -21,10 +21,10 @@
 t_data*	get_free_block(t_data* head, size_t size)
 {
 	t_data* cur = head;
-	
+
 	if (head)
 		while (cur && !(cur->free && cur->size >= size))
-			cur = cur->next;	
+			cur = cur->next;
 	return (cur);
 }
 
