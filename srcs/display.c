@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   display.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chaidel <chaidel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 17:20:50 by chaidel           #+#    #+#             */
-/*   Updated: 2024/03/22 17:38:02 by chaidel          ###   ########.fr       */
+/*   Updated: 2025/09/20 20:48:27 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,24 +17,29 @@
 */
 void	show_alloc_mem()
 {
-	// pthread_mutex_lock(&mutex);
+	if (!base) {
+		// ft_printf("%sbase is not initialized yet !%s\n", BRED, END);
+		return ;
+	}
+	int total = 0;
 
-	size_t total = 0;
+	bool meta = false;
+	if (meta)
+		ft_printf("%sMETA DATA%s  : %x (hex) / %u (int)\n",BBLU, END, META_DATA, META_DATA);
 
-	printf("%sMETA DATA%s  : %lx (hex) / %lu (int)\n",BBLU, END, META_DATA, META_DATA);
-
-	printf("%sTINY%s  : %p : %li bytes.\n",BYEL, END, base->ptr_tiny, base->size_tiny);
+	ft_printf("%sTINY%s  : %p\n",BYEL, END, (base->ptr_tiny != NULL ? base->ptr_tiny : NULL));
 	total += get_alloc_mem_type((t_data*)base->ptr_tiny);
-	
-	printf("%sSMALL%s : %p\n",BYEL, END, base->ptr_small);
-	total += get_alloc_mem_type(base->ptr_small);
-	
-	printf("%sLARGE%s : %p\n",BYEL, END, base->ptr_large);
-	total += get_alloc_mem_type(base->ptr_large);
-	
-	printf("%sTotal%s : %li %sbytes%s.\n",BWHI, END, total, BWHI, END);
 
-	// pthread_mutex_unlock(&mutex);
+	ft_printf("%sSMALL%s : %p\n",BYEL, END, (base->ptr_small != NULL ? base->ptr_small : NULL));
+	total += get_alloc_mem_type(base->ptr_small);
+
+	ft_printf("%sLARGE%s : %p\n",BYEL, END, (base->ptr_large != NULL ? base->ptr_large : NULL));
+	total += get_alloc_mem_type(base->ptr_large);
+
+	ft_printf("%sTotal%s : %i %sbytes%s.\n",BWHI, END, total, BWHI, END);
+	if (meta)
+		ft_printf("-------------------------------------------------------\n");
+
 }
 
 /**
@@ -45,26 +50,29 @@ size_t	get_alloc_mem_type(t_data* head)
 {
 	size_t total = 0;
 	bool val = false;
-
+	bool color = false;
+	bool index = false;
+	
 	if (!head) {
 		return (total);
 	}
 	int i = 0;
 	while (head) {
 		i++;
-		printf("[%d]\t", i);
+		if (index)
+			ft_printf("[%d]\t", i);
 		if (!head->free) { // Display only used mem
-			printf("%p - %p\t: %zd bytes. ", (void *)head + META_DATA, (void *)head + META_DATA + head->size, head->size); // head + META-DATA => start ptr chunk | (void*)head + META_DATA + head->size => end ptr of chunk
-			if (head->head)
-				printf("%sHEAD !%s%s\n", RED, RED, END);
+			ft_printf("%p - %p\t: %u bytes. ", (void *)head + META_DATA, (void *)head + META_DATA + head->size, head->size); // head + META-DATA => start ptr chunk | (void*)head + META_DATA + head->size => end ptr of chunk
+			if (head->head && index)
+				ft_printf("%sHEAD !%s%s\n", RED, RED, END);
 			else if (val)
-				printf("\t|-> %s\n", get_value((void *)head + META_DATA, (void *)head + META_DATA + head->size));
+				ft_printf("\t|-> %s\n", get_value((void *)head + META_DATA, (void *)head + META_DATA + head->size));
 			else
-				printf("\n");
+				ft_printf("\n");
 			total += head->size;
 		}
-		if (head->free) {
-			printf("%s%p - %p\t: %zu bytes.%s\n", GRN, (void *)head + META_DATA, (void *)head + head->size, head->size, END);
+		if (head->free && color) {
+			ft_printf("%s%p - %p\t: %u bytes.%s\n", GRN, (void *)head + META_DATA, (void *)head + head->size, head->size, END);
 		}
 		head = head->next;
 	}
@@ -72,6 +80,8 @@ size_t	get_alloc_mem_type(t_data* head)
 	return (total);
 }
 
+// Extract the value of a memory zone between start and end (addresses).
+// Returns a malloced string.
 char*	get_value(void* start, void* end) {
 	size_t len = (char*)end - (char*)start;
 	printf("len: %zu\n", len);

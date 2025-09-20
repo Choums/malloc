@@ -16,9 +16,8 @@
  * @brief When a chunk is wide enough to held the asked size plus a new chunk 
  * (at least ```META_DATA``` + ```TYPE_SIZE```), we insert a new chunk in the list.
  * 
- * @param ptr Pointer on chunk to be split.
+ * @param ptr Pointer on chunk to be split. (must point on the meta)
  * @param req_size Requested size during allocation.
- * @param last Last chunk of a type.
  */
 void	split_blocks(t_data* ptr, size_t req_size)
 {
@@ -34,6 +33,7 @@ void	split_blocks(t_data* ptr, size_t req_size)
 	/* Mis a jour des meta du nouveau chunk */
 	new->size = ptr->size - req_size - META_DATA;
 	new->free = true;
+	new->head = false;
 	new->next = next;
 	new->prev = ptr;
 
@@ -54,6 +54,7 @@ void	fusion_blocks(t_data* ptr)
 		ptr->next = ptr->next->next; // Saves pointer of the chunk after the one merged.
 	
 		if (ptr->next) { // Add the curr chunk as prev
+			ft_printf("Updating next prev\n");
 			ptr->next->prev = ptr;
 		}
 	}

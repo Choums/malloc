@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   typed_allocation.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chaidel <chaidel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 17:09:25 by chaidel           #+#    #+#             */
-/*   Updated: 2024/03/23 17:21:49 by chaidel          ###   ########.fr       */
+/*   Updated: 2025/09/20 19:00:35 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,12 @@ void* large_alloc(size_t size)
 {
 	void* ptr = NULL;
 
+	ptr = mmap(0, META_DATA + size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1 , 0);
+	if (ptr == MAP_FAILED) {
+		return (ptr);
+	}
+
 	if (base->ptr_large == NULL) { // head null => alloc will be head.
-		ptr = mmap(0, META_DATA + size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1 , 0);
-		if (ptr == MAP_FAILED) {
-			return (ptr);
-		}
-		
 		/* init global on head and last (1st call)*/
 		base->ptr_large = ptr;
 		base->lst_large = ptr;
@@ -38,11 +38,6 @@ void* large_alloc(size_t size)
 		((t_data *)base->ptr_large)->prev = NULL;
 
 	} else { // add alloc as last.
-		ptr = mmap(0, META_DATA + size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1 , 0);
-		if (ptr == MAP_FAILED) {
-			return (ptr);
-		}
-		
 		/* init meta */
 		((t_data *)ptr)->size = size;
 		((t_data *)ptr)->free = false;
@@ -114,6 +109,7 @@ void*	small_alloc(size_t size)
 	}
 	
 	ptr = get_free_block(base->ptr_small, size);
+	// ft_printf("Small alloc::req size=%lu\n", size);
 	if (ptr) // fitting chunk found
 	{
 		((t_data *)ptr)->free = false;

@@ -12,20 +12,11 @@
 
 #include "../includes/ft_malloc.h"
 
-t_mptr* base  = NULL;
-pthread_mutex_t mutex;
-
 void* malloc(size_t size)
 {
 	void* ptr;
-	
-	if (!base)
-		pthread_mutex_init(&mutex, NULL);
-	pthread_mutex_lock(&mutex);
-	
+
 	ptr = mem_alloc(size);
-	
-	pthread_mutex_unlock(&mutex);
 	
 	return (ptr);
 }

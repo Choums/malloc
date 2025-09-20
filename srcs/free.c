@@ -21,8 +21,6 @@ void	free(void* ptr)
 		return;
 	}
 
-	pthread_mutex_lock(&mutex);
-
 	tmp = ptr - META_DATA; // Gets ptr pointed on MD.
 
 	// Define type according to size.
@@ -35,7 +33,4 @@ void	free(void* ptr)
 	} else {
 		large_free(tmp);
 	}
-	
-
-	pthread_mutex_unlock(&mutex);
 }

@@ -10,6 +10,7 @@ SRC			=	malloc.c\
 				utils.c\
 				finder.c\
 				display.c\
+				realloc.c\
 				allocation.c\
 				typed_free.c\
 				typed_allocation.c\
@@ -17,13 +18,13 @@ SRC			=	malloc.c\
 OBJ			=	$(addprefix $(OBJDIR)/,$(SRC:.c=.o))
 
 CC			=	gcc
-CFLAGS		=	-std=gnu99 -g -Wall -Wextra -Werror -lrt -lpthread  #-fsanitize=address -static-libasan
+CFLAGS		=	-std=gnu99 -g -Wall -Wextra -Werror
 
 FT			=	./libft/
 FT_LIB		=	$(addprefix $(FT),libft.a)
 FT_INC		=	-I ./libft
 
-all:			obj $(FT_LIB) $(NAME)
+all:			obj $(FT_LIB) $(NAME) $(NAME_LINK)
 
 obj:
 				mkdir -p $(OBJDIR)
@@ -39,6 +40,9 @@ $(NAME):		$(OBJ)
 				ar -rc $(NAME) $(OBJ)
 				ranlib $(NAME)
 				ln -s $(NAME) $(NAME_LINK)
+
+$(NAME_LINK):	$(OBJ)
+				$(CC) -shared -o $(NAME_LINK) $(OBJ)
 
 test:			$(NAME_LINK) $(FT_LIB)
 				$(CC) src_test/*.c -I $(INCDIR) $(FT_INC) -L. -l_malloc $(FT_LIB) -o test_malloc

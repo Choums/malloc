@@ -28,7 +28,7 @@ size_t align8(size_t size)
 	return (((((size - 1) >> 3) << 3)) + 8);
 }
 
-
+t_mptr* base  = NULL;
 /**
  * First call of malloc, allocate space for global heads.
 */
@@ -47,9 +47,9 @@ bool	init_base()
 	base->lst_small = NULL;
 	base->lst_large = NULL;
 
-	base->size_tiny = 0;
-	base->size_small = 0;
-	base->size_large = 0;
+	base->size_tiny = 0U;
+	base->size_small = 0U;
+	base->size_large = 0U;
 
 	return (true);
 }

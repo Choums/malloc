@@ -30,8 +30,8 @@
 */
 # define META_DATA sizeof(t_data)
 
-# define TINY_SIZE	(PAGE_SIZE / (64))
-# define SMALL_SIZE	(PAGE_SIZE / (16))
+# define TINY_SIZE	(PAGE_SIZE / (8))
+# define SMALL_SIZE	(PAGE_SIZE / (4))
 
 # define TINY_ZONE	(size_t)((TINY_SIZE + META_DATA) * 100)
 # define SMALL_ZONE	(size_t)((SMALL_SIZE + META_DATA) * 100)
