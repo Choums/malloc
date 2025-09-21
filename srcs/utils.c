@@ -54,7 +54,6 @@ void	fusion_blocks(t_data* ptr)
 		ptr->next = ptr->next->next; // Saves pointer of the chunk after the one merged.
 	
 		if (ptr->next) { // Add the curr chunk as prev
-			ft_printf("Updating next prev\n");
 			ptr->next->prev = ptr;
 		}
 	}

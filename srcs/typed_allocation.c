@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 17:09:25 by chaidel           #+#    #+#             */
-/*   Updated: 2025/09/20 19:00:35 by marvin           ###   ########.fr       */
+/*   Updated: 2025/09/21 12:41:07 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,13 +109,12 @@ void*	small_alloc(size_t size)
 	}
 	
 	ptr = get_free_block(base->ptr_small, size);
-	// ft_printf("Small alloc::req size=%lu\n", size);
+	
 	if (ptr) // fitting chunk found
 	{
 		((t_data *)ptr)->free = false;
 
 		if ((((t_data *)ptr)->size - size ) > (META_DATA)) { // Unused space will be a new chunk.
-			// printf("%s--- Spliting Small ! ---%s\n", BRED, END);
 
 			split_blocks(ptr, size);
 		}

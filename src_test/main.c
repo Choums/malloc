@@ -16,6 +16,9 @@
 #include <unistd.h>
 #include <stdio.h>
 
+#define ERROR -1
+#define SUCCESS 0
+
 void test_show_alloc_mem()
 {
 	void* ptr1 = malloc(10U);
@@ -43,17 +46,27 @@ void test_show_alloc_mem()
 void test_hundred_alloc() {
 	char* s1[200];
 	char* s2[200];
+	char* s3[3];
 
 	for (int i = 0; i < 200; i++) {
 		s1[i] = malloc(TINY_SIZE);
 		s2[i] = malloc(SMALL_SIZE);
 	}
+	
+	s3[0] = malloc(SMALL_SIZE + TINY_SIZE);
+	s3[1] = malloc(SMALL_SIZE + TINY_SIZE * 2);
+	s3[2] = malloc(SMALL_SIZE + TINY_SIZE * 3);
+	
 	show_alloc_mem();
 
 	for (int i = 0; i < 200; i++) {
 		free(s1[i]);
 		free(s2[i]);
 	}
+
+	free(s3[0]);
+	free(s3[1]);
+	free(s3[2]);
 	show_alloc_mem();
 }
 
@@ -67,12 +80,54 @@ void test_realloc() {
 	free(ptr);
 }
 
+void test_write() {
+	char* ptr = malloc(27);
+	for (int i = 0; i < 27; i++) {
+		ptr[i] = 'A' + i % 26;
+	}
+	ptr[26] = '\0';
+	show_alloc_mem();
+	ft_printf("[%s::%d] 👉 \"%s\"\n", __func__, __LINE__, ptr);
+
+	ptr = realloc(ptr, 53);
+	for (int i = 0; i < 53; i++) {
+		ptr[i] = 'a' + i % 26;
+	}
+	ptr[52] = '\0';
+	show_alloc_mem();
+	ft_printf("[%s::%d] 👉 \"%s\"\n", __func__, __LINE__, ptr);
+
+	free(ptr);
+}
+
+void test_realloc_null() {
+	char* ptr = realloc(NULL, 10); // Should behave like malloc(10)
+	show_alloc_mem();
+
+	void* nul = realloc(ptr, 0); // Should behave like free(ptr)
+	show_alloc_mem();
+	free(nul);
+	show_alloc_mem();
+}
+
+void big_malloc_test() {
+	size_t total = 2000000000U; // 2GB
+	ft_printf("[%s::%d] 👉 %i\n", __func__, __LINE__, total);
+	void* big = malloc(total);
+	show_alloc_mem();
+	free(big);
+	show_alloc_mem();
+}
+
 int main(void) {
 	// ft_printf("Tiny size: %u\n", TINY_SIZE);
 	// ft_printf("Small size: %u\n", SMALL_SIZE);
 
-	test_show_alloc_mem();
-	test_hundred_alloc();
-	test_realloc();
+	// test_show_alloc_mem();
+	// test_hundred_alloc();
+	// test_realloc();
+	// test_write();
+	// test_realloc_null();
+	// big_malloc_test();
 	return (0);
 }

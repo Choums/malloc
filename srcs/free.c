@@ -26,8 +26,6 @@ void	free(void* ptr)
 	// Define type according to size.
 	type = (tmp->size <= TINY_SIZE) ? TINY : (tmp->size <= SMALL_SIZE) ? SMALL : LARGE;
 
-	// printf("-- find type: %d --\n", type);
-
 	if (type != LARGE) {
 		tiny_small_free(tmp, type);
 	} else {

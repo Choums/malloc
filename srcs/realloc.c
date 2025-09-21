@@ -18,6 +18,11 @@ void*   realloc(void* ptr, size_t size)
 
     if (ptr == NULL)
         return (malloc(size));
+    if (size == 0U)
+    {
+        free(ptr);
+        return (NULL);
+    }
 
     size = align8(size);
     meta_ptr = (t_data*)(ptr - META_DATA);
@@ -81,7 +86,8 @@ void*   larger_realloc(t_data* ptr, t_data* meta_ptr, size_t size)
 
     ft_memmove(new_ptr, meta_ptr, meta_ptr->size);
 
-    free(ptr);
+    // free(ptr);
+    (void)ptr;
 
     return (new_ptr);
 }

@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 17:20:50 by chaidel           #+#    #+#             */
-/*   Updated: 2025/09/20 20:48:27 by marvin           ###   ########.fr       */
+/*   Updated: 2025/09/20 21:37:54 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	show_alloc_mem()
 	}
 	int total = 0;
 
-	bool meta = false;
+	bool meta = true;
 	if (meta)
 		ft_printf("%sMETA DATA%s  : %x (hex) / %u (int)\n",BBLU, END, META_DATA, META_DATA);
 
@@ -50,8 +50,8 @@ size_t	get_alloc_mem_type(t_data* head)
 {
 	size_t total = 0;
 	bool val = false;
-	bool color = false;
-	bool index = false;
+	bool freee = true;
+	bool index = true;
 	
 	if (!head) {
 		return (total);
@@ -60,18 +60,18 @@ size_t	get_alloc_mem_type(t_data* head)
 	while (head) {
 		i++;
 		if (index)
-			ft_printf("[%d]\t", i);
+			if (freee)
+				ft_printf("[%d]\t", i);
 		if (!head->free) { // Display only used mem
 			ft_printf("%p - %p\t: %u bytes. ", (void *)head + META_DATA, (void *)head + META_DATA + head->size, head->size); // head + META-DATA => start ptr chunk | (void*)head + META_DATA + head->size => end ptr of chunk
 			if (head->head && index)
-				ft_printf("%sHEAD !%s%s\n", RED, RED, END);
-			else if (val)
+				ft_printf("%sHEAD !%s%s", RED, RED, END);
+			if (val)
 				ft_printf("\t|-> %s\n", get_value((void *)head + META_DATA, (void *)head + META_DATA + head->size));
-			else
-				ft_printf("\n");
+			ft_printf("\n");
 			total += head->size;
 		}
-		if (head->free && color) {
+		if (head->free && freee) {
 			ft_printf("%s%p - %p\t: %u bytes.%s\n", GRN, (void *)head + META_DATA, (void *)head + head->size, head->size, END);
 		}
 		head = head->next;
@@ -84,15 +84,15 @@ size_t	get_alloc_mem_type(t_data* head)
 // Returns a malloced string.
 char*	get_value(void* start, void* end) {
 	size_t len = (char*)end - (char*)start;
-	printf("len: %zu\n", len);
+	ft_printf("len: %u\n", len);
 
 	char* string = malloc(len + 1);
 	if (!string) return NULL;
 
 	for (size_t i = 0; i < len; i++) {
 		string[i] = *((char*)start + i);
-		printf("[%zu]%c, ", i, string[i]);
-		if ((i+1) % 8 == 0 && i != 0) printf(";"); // To separate every 8 bytes, to read alined memory
+		ft_printf("[%u]%c", i, string[i]);
+		if ((i+1) % 8 == 0 && i != 0) ft_printf("; "); else ft_printf(", "); // To separate every 8 bytes, to read alined memory
 	}
 	string[len] = '\0';
 
