@@ -1,5 +1,9 @@
-NAME    	=	ft_malloc
-NAME_LINK	=	lib_malloc.so
+ifeq ($(HOSTTYPE),)
+	HOSTTYPE := $(shell uname -m)_$(shell uname -s)
+endif
+
+NAME_LINK	=	libft_malloc.so
+NAME		=	libft_malloc_$(HOSTTYPE).so.
 
 SRCDIR		=	./srcs
 INCDIR		=	./includes
@@ -24,7 +28,7 @@ FT			=	./libft/
 FT_LIB		=	$(addprefix $(FT),libft.a)
 FT_INC		=	-I ./libft
 
-all:			obj $(FT_LIB) $(NAME) $(NAME_LINK)
+all:			obj $(FT_LIB) $(NAME)
 
 obj:
 				mkdir -p $(OBJDIR)
@@ -41,11 +45,8 @@ $(NAME):		$(OBJ)
 				ranlib $(NAME)
 				ln -s $(NAME) $(NAME_LINK)
 
-$(NAME_LINK):	$(OBJ)
-				$(CC) -shared -o $(NAME_LINK) $(OBJ)
-
 test:			$(NAME_LINK) $(FT_LIB)
-				$(CC) src_test/*.c -I $(INCDIR) $(FT_INC) -L. -l_malloc $(FT_LIB) -o test_malloc
+				$(CC) src_test/*.c -I $(INCDIR) $(FT_INC) -L. $(NAME_LINK) $(FT_LIB) -o test_malloc
 
 clean:
 				rm -rf $(OBJDIR)

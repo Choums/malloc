@@ -128,6 +128,6 @@ int main(void) {
 	// test_realloc();
 	// test_write();
 	// test_realloc_null();
-	// big_malloc_test();
+	big_malloc_test();
 	return (0);
 }
