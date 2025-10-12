@@ -1,9 +1,9 @@
 ifeq ($(HOSTTYPE),)
-	HOSTTYPE := $(shell uname -m)_$(shell uname -s)
+HOSTTYPE := $(shell uname -m)_$(shell uname -s)
 endif
 
 NAME_LINK	=	libft_malloc.so
-NAME		=	libft_malloc_$(HOSTTYPE).so.
+NAME		=	libft_malloc_$(HOSTTYPE).so
 
 SRCDIR		=	./srcs
 INCDIR		=	./includes
@@ -22,7 +22,7 @@ SRC			=	malloc.c\
 OBJ			=	$(addprefix $(OBJDIR)/,$(SRC:.c=.o))
 
 CC			=	gcc
-CFLAGS		=	-std=gnu99 -g -Wall -Wextra -Werror
+CFLAGS		=	-std=gnu99 -g -Wall -Wextra -Werror -fPIC
 
 FT			=	./libft/
 FT_LIB		=	$(addprefix $(FT),libft.a)
@@ -33,20 +33,19 @@ all:			obj $(FT_LIB) $(NAME)
 obj:
 				mkdir -p $(OBJDIR)
 
-$(OBJDIR)/%.o:	$(SRCDIR)/%.c includes/ft_malloc.h
+$(OBJDIR)/%.o:	$(SRCDIR)/%.c $(INCDIR)/malloc.h
 				$(CC) $(CFLAGS) $(FT_INC) -I $(INCDIR) -o $@ -c $<
 
 $(FT_LIB):
 				make -C $(FT)
 
-$(NAME):		$(OBJ)
+$(NAME):		$(OBJ) $(FT_LIB)
 				rm -f $(NAME_LINK)
-				ar -rc $(NAME) $(OBJ)
-				ranlib $(NAME)
+				$(CC) $(CFLAGS) -shared -o $(NAME) $(OBJ) -Wl,--whole-archive $(FT_LIB) -Wl,--no-whole-archive #Link the static libft.a into the shared library. --whole-archive forces inclusion of all symbols
 				ln -s $(NAME) $(NAME_LINK)
 
-test:			$(NAME_LINK) $(FT_LIB)
-				$(CC) src_test/*.c -I $(INCDIR) $(FT_INC) -L. $(NAME_LINK) $(FT_LIB) -o test_malloc
+test:			$(NAME_LINK)
+				$(CC) src_test/*.c -I $(INCDIR) $(FT_INC) -L. -Wl,-rpath=. -l:$(NAME_LINK) -o test_malloc
 
 clean:
 				rm -rf $(OBJDIR)
@@ -56,5 +55,6 @@ fclean:			clean
 				rm -rf $(NAME) $(NAME_LINK) test_malloc
 				make -C $(FT) fclean
 
-re: fclean all
+re:				fclean all
 
+.PHONY:			all clean fclean re test obj

@@ -12,7 +12,7 @@
 
 # define PAGE_SIZE (size_t)getpagesize()
 
-#include "ft_malloc.h"
+#include "malloc.h"
 #include <unistd.h>
 #include <stdio.h>
 
@@ -119,6 +119,18 @@ void big_malloc_test() {
 	show_alloc_mem();
 }
 
+void test_real() {
+	char *addr;
+
+	addr = malloc(16);
+	show_alloc_mem();
+	free(NULL);
+	// free((void *)addr + 5);
+	show_alloc_mem();
+	if (realloc((void *)addr + 5, 10) == NULL)
+		ft_printf("Bonjours\n");
+}
+
 int main(void) {
 	// ft_printf("Tiny size: %u\n", TINY_SIZE);
 	// ft_printf("Small size: %u\n", SMALL_SIZE);
@@ -128,6 +140,7 @@ int main(void) {
 	// test_realloc();
 	// test_write();
 	// test_realloc_null();
-	big_malloc_test();
+	// big_malloc_test();
+	test_real();
 	return (0);
 }

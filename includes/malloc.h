@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_malloc.h                                        :+:      :+:    :+:   */
+/*   malloc.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: chaidel <chaidel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -98,9 +98,9 @@ typedef struct s_data t_data;
 
 extern pthread_mutex_t mutex;
 
-
-void*	ft_malloc(size_t size);
-void	ft_free(void* ptr);
+void*	malloc(size_t size);
+void	free(void* ptr);
+void*	realloc(void* ptr, size_t size);
 
 /** --	Allocation	-- **/
 
@@ -127,6 +127,7 @@ void	tiny_small_free(t_data* ptr, TYPE type);
 
 void	show_alloc_mem();
 size_t	get_alloc_mem_type(t_data* head);
+char*	get_value(void* start, void* end);
 
 /**	--	Finders	-- **/
 
@@ -139,5 +140,4 @@ void	split_blocks(t_data* ptr, size_t req_size);
 void	fusion_blocks(t_data* ptr);
 t_data	*lst_last_base(t_data *lst);
 
-char*	get_value(void* start, void* end);
 #endif

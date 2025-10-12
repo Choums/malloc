@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   finder.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chaidel <chaidel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/10 17:15:52 by chaidel           #+#    #+#             */
-/*   Updated: 2024/03/23 17:49:42 by chaidel          ###   ########.fr       */
+/*   Updated: 2025/09/28 14:49:55 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/ft_malloc.h"
+#include "../includes/malloc.h"
 
 /**
  * Go over the list of chunks until one is free and wide enough.
