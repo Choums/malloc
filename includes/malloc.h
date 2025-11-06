@@ -115,8 +115,8 @@ void*	large_alloc(size_t size);
 
 /** --	Realloc	-- **/
 
-void*   smaller_realloc(t_data* meta_ptr, size_t size);
-void*   larger_realloc(t_data* ptr, t_data* meta_ptr, size_t size);
+// void*   smaller_realloc(t_data* meta_ptr, size_t size);
+void*   larger_realloc(void* ptr, t_data* meta_ptr, size_t size);
 
 /** --	Free	-- **/
 

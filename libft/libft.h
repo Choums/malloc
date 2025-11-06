@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chaidel <chaidel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/23 15:28:08 by chaidel           #+#    #+#             */
-/*   Updated: 2024/03/17 18:37:21 by chaidel          ###   ########.fr       */
+/*   Updated: 2025/11/06 23:37:26 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,18 @@
 # include <string.h>
 # include <unistd.h>
 # include "ft_printf.h"
+
+/** Tests **/
+
+#define ASSERT(cond, msg) do { \
+    if (cond) { \
+        ft_printf("%s[PASS] %s%s\n", BGRN, msg, END); \
+        tests_passed++; \
+    } else { \
+        ft_printf("%s[FAIL] %s%s\n", BRED, msg, END); \
+        tests_failed++; \
+    } \
+} while (0)
 
 /** Colors **/
 

@@ -1,8 +1,6 @@
 *.o
 .vscode
 .*
-ft_malloc
-lib_malloc.so
-test_malloc
 *.a
-testMalloc
+*.so
+test_*

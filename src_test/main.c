@@ -19,6 +19,9 @@
 #define ERROR -1
 #define SUCCESS 0
 
+static int tests_passed = 0;
+static int tests_failed = 0;
+
 void test_show_alloc_mem()
 {
 	void* ptr1 = malloc(10U);
@@ -80,6 +83,26 @@ void test_realloc() {
 	free(ptr);
 }
 
+void simple_realloc()
+{
+	char* ptr = (char*)malloc(sizeof(char) * (strlen("Hello, World!") + 1));
+	strcpy(ptr, "Hello, World!\0");
+	show_alloc_mem();
+	ft_printf("[%s::%d] 👉 \"%s\"\n", __func__, __LINE__, ptr);
+
+	char* ptr2 = (char*)realloc(ptr, sizeof(char) * (strlen("Hello") + 1));
+	ptr2[strlen("Hello")] = '\0';
+	printf("[%s::%d] 👉 \"%s\"\n", __func__, __LINE__, ptr2);
+	show_alloc_mem();
+
+	char* ptr3 = (char*)realloc(ptr2, sizeof(char) * (strlen("Hello, Woooooooooorld !") + 1));
+	strcpy(ptr3, "Hello, Woooooooooorld !\0");
+	ft_printf("[%s::%d] 👉 \"%s\"\n", __func__, __LINE__, ptr3);
+	show_alloc_mem();
+
+	free(ptr3);
+}
+
 void test_write() {
 	char* ptr = malloc(27);
 	for (int i = 0; i < 27; i++) {
@@ -119,16 +142,70 @@ void big_malloc_test() {
 	show_alloc_mem();
 }
 
-void test_real() {
-	char *addr;
+void test_malloc_basic(void)
+{
+    const size_t size = 64;
+    char *p = malloc(size);
+    ASSERT(p != NULL, "malloc returns non-NULL for size 64");
+    if (p) {
+        for (size_t i = 0; i < size; i++) p[i] = (char)(i & 0xff);
+        for (size_t i = 0; i < size; i++) {
+            if (p[i] != (char)(i & 0xff)) {
+                ASSERT(0, "malloc memory writable and readable");
+                free(p);
+                return;
+            }
+        }
+        ASSERT(1, "malloc memory writable and readable");
+        free(p);
+    }
+}
 
-	addr = malloc(16);
-	show_alloc_mem();
-	free(NULL);
-	// free((void *)addr + 5);
-	show_alloc_mem();
-	if (realloc((void *)addr + 5, 10) == NULL)
-		ft_printf("Bonjours\n");
+void test_realloc_grow_preserve(void)
+{
+    size_t oldsz = 32;
+    size_t newsz = 128;
+	char *p = malloc(oldsz);
+	ASSERT(p != NULL, "malloc returns non-NULL for realloc grow test");
+	if (!p) return;
+	char pattern[oldsz];
+	for (size_t i = 0; i < oldsz - 1; i++) {
+		pattern[i] = (char)('A');
+		p[i] = pattern[i];
+	}
+	char *q = realloc(p, newsz);
+	ASSERT(q != NULL, "realloc growing returns non-NULL");
+	if (!q) return;
+	int ok = memcmp(q, pattern, oldsz) == 0;
+	ASSERT(ok, "realloc preserved previous contents when growing");
+	free(q);
+}
+
+void test_realloc_shrink_preserve(void)
+{
+    size_t start = 128;
+    size_t shrink = 32;
+	unsigned char *p = malloc(start);
+	ASSERT(p != NULL, "malloc returns non-NULL for realloc shrink test");
+	if (!p) return;
+	unsigned char pattern[start];
+	for (size_t i = 0; i < start; i++) {
+		pattern[i] = (unsigned char)('0' + (i % 10));
+		p[i] = pattern[i];
+	}
+	unsigned char *q = realloc(p, shrink);
+	ASSERT(q != NULL, "realloc shrinking returns non-NULL (or same ptr)");
+	if (!q) return;
+	int ok = memcmp(q, pattern, shrink) == 0;
+	ASSERT(ok, "realloc preserved prefix when shrinking");
+	free(q);
+}
+
+void test_realloc_null_behaves_like_malloc(void)
+{
+    char *p = realloc(NULL, 50);
+    ASSERT(p != NULL, "realloc(NULL, size) behaves like malloc (non-NULL)");
+    if (p) free(p);
 }
 
 int main(void) {
@@ -138,9 +215,22 @@ int main(void) {
 	// test_show_alloc_mem();
 	// test_hundred_alloc();
 	// test_realloc();
+	simple_realloc();
 	// test_write();
 	// test_realloc_null();
 	// big_malloc_test();
-	test_real();
+
+
+	// ---------------------------------------------------------------------------- //
+
+	// printf("%sReimplemented Malloc\n\n%s", BBLU, END);
+	// printf("Running allocator automatic tests...\n");
+    // test_malloc_basic();
+    // test_realloc_grow_preserve();
+    // test_realloc_shrink_preserve();
+    // test_realloc_null_behaves_like_malloc();
+
+    // printf("\nSummary: %d passed, %d failed\n\n", tests_passed, tests_failed);
+
 	return (0);
 }

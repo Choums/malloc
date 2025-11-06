@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 17:09:25 by chaidel           #+#    #+#             */
-/*   Updated: 2025/09/28 14:52:19 by marvin           ###   ########.fr       */
+/*   Updated: 2025/10/25 14:28:13 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ void* large_alloc(size_t size)
 */
 void*	tiny_alloc(size_t size)
 {
-	void* ptr = NULL;
+	t_data* ptr = NULL;
 
 	if (base->ptr_tiny == NULL) { // Head null => alloc type
 		if (!init_zones(TINY))
@@ -72,9 +72,9 @@ void*	tiny_alloc(size_t size)
 
 	if (ptr) // fitting chunk found
 	{
-		((t_data *)ptr)->free = false;
+		ptr->free = false;
 
-		if ((((t_data *)ptr)->size - size) > (META_DATA)) { // Unused space will be a new chunk.
+		if ((ptr->size - size) > (META_DATA)) { // Unused space will be a new chunk.
 			// printf("%s--- Spliting Tiny ! --- ptr->size:%lu, reqSize:%lu, META: %lu%s\n", BRED, ((t_data *)ptr)->size, size, META_DATA,END);
 
 			split_blocks(ptr, size);
@@ -82,8 +82,7 @@ void*	tiny_alloc(size_t size)
 		
 	} else { // Allocate a new zone
 		// printf("%s--- Allocating Tiny ! ---%s\n", BRED, END);
-		ptr = alloc_new_zone(TINY);
-		if (ptr == MAP_FAILED) {
+		if (alloc_new_zone(TINY) == MAP_FAILED) {
 			return (NULL);
 		}
 		return (tiny_alloc(size)); // Recursion to split the chunk from allocation.
@@ -101,7 +100,7 @@ void*	tiny_alloc(size_t size)
 */
 void*	small_alloc(size_t size)
 {
-	void*	ptr = NULL;
+	t_data*	ptr = NULL;
 
 	if (base->ptr_small == NULL) { // Head null => first alloc type.
 		if (!init_zones(SMALL))
@@ -112,16 +111,15 @@ void*	small_alloc(size_t size)
 	
 	if (ptr) // fitting chunk found
 	{
-		((t_data *)ptr)->free = false;
+		ptr->free = false;
 
-		if ((((t_data *)ptr)->size - size ) > (META_DATA)) { // Unused space will be a new chunk.
+		if ((ptr->size - size ) > (META_DATA)) { // Unused space will be a new chunk.
 
 			split_blocks(ptr, size);
 		}
 		
 	} else { // Allocate a new zone
-		ptr = alloc_new_zone(SMALL);
-		if (ptr == MAP_FAILED) {
+		if (alloc_new_zone(SMALL) == MAP_FAILED) {
 			return (NULL);
 		}
 		return (small_alloc(size)); // Recursion to split the chunk from allocation.

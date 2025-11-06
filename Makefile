@@ -45,7 +45,11 @@ $(NAME):		$(OBJ) $(FT_LIB)
 				ln -s $(NAME) $(NAME_LINK)
 
 test:			$(NAME_LINK)
-				$(CC) src_test/*.c -I $(INCDIR) $(FT_INC) -L. -Wl,-rpath=. -l:$(NAME_LINK) -o test_malloc
+				$(CC) src_test/main.c -I $(INCDIR) $(FT_INC) -L. -Wl,-rpath=. -l:$(NAME_LINK) -o test_malloc
+
+# Build and run the allocator tests against the system malloc (do NOT link libft_malloc.so)
+test_system:
+			$(CC) src_test/auto_test.c -I $(INCDIR) $(FT_INC) -o test_system
 
 clean:
 				rm -rf $(OBJDIR)
@@ -55,6 +59,8 @@ fclean:			clean
 				rm -rf $(NAME) $(NAME_LINK) test_malloc
 				make -C $(FT) fclean
 
-re:				fclean all
+re:
+	@$(MAKE) fclean
+	@$(MAKE) all
 
-.PHONY:			all clean fclean re test obj
+.PHONY:			all clean fclean re test obj test_system

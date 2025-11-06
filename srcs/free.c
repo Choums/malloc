@@ -14,17 +14,16 @@
 
 void	free(void* ptr)
 {
-	t_data* tmp = NULL;
-	TYPE	type;
+	// t_data* tmp = NULL;
 
 	if (!ptr) {
 		return;
 	}
 
-	tmp = ptr - META_DATA; // Gets ptr pointed on MD.
+	t_data* tmp = (t_data*)(ptr - META_DATA); // Gets ptr pointed on MD.
 
 	// Define type according to size.
-	type = (tmp->size <= TINY_SIZE) ? TINY : (tmp->size <= SMALL_SIZE) ? SMALL : LARGE;
+	TYPE type = (tmp->size <= TINY_SIZE) ? TINY : (tmp->size <= SMALL_SIZE) ? SMALL : LARGE;
 
 	if (type != LARGE) {
 		tiny_small_free(tmp, type);
