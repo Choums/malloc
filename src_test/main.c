@@ -273,17 +273,17 @@ int main(void) {
 
 	// ---------------------------------------------------------------------------- //
 
-	// printf("%sReimplemented Malloc\n\n%s", BBLU, END);
-	// printf("Running allocator automatic tests...\n");
-    // test_malloc_basic();
-    // test_realloc_grow_preserve();
-    // test_realloc_shrink_preserve();
-    // test_realloc_null_behaves_like_malloc();
+	printf("%sReimplemented Malloc\n\n%s", BBLU, END);
+	printf("Running allocator automatic tests...\n");
+    test_malloc_basic();
+    test_realloc_grow_preserve();
+    test_realloc_shrink_preserve();
+    test_realloc_null_behaves_like_malloc();
 
-    // printf("\nSummary: %d passed, %d failed\n\n", tests_passed, tests_failed);
+    printf("\nSummary: %d passed, %d failed\n\n", tests_passed, tests_failed);
 
 
 	// official_realloc();
-	test_free();
+	// test_free();
 	return (0);
 }
