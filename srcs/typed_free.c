@@ -41,6 +41,7 @@ void	large_free(t_data* ptr)
 
 void	tiny_small_free(t_data* ptr, TYPE type)
 {
+	// ft_printf("Freeing TINY/SMALL block of size: %zu\n", ptr->size);
 	ptr->free = true;
 
 	/**	---- Prev is free ----	**/
@@ -58,36 +59,50 @@ void	tiny_small_free(t_data* ptr, TYPE type)
 
 	/**	---- End of zone ----	**/
 	if (ptr->head) {
-		// printf("HEAD !\n");
 		if ((ptr->next && ptr->next->head) || (!ptr->next))
 		{
-			// printf("End of zone !\n");
-
-			/**	---- Rewiring ----	**/
-			if (ptr->next)
-				ptr->next->prev = ptr->prev;
-			if (ptr->prev)
-				ptr->prev->next = ptr->next;
-
+			// ft_printf("End of zone !\n");
 			if (type == TINY)
 			{
-				// printf("liberating TINY zone!\n");
-				if (base->ptr_tiny == ptr)
-					base->ptr_tiny = ptr->next;
-				else if (base->lst_tiny == ptr)
-					base->lst_tiny = ptr->prev;
-				base->size_tiny -= TINY_ZONE;
+				if (base->size_tiny > TINY_ZONE) // More than one zone allocated
+				{
+					/**	---- Updating base ----	**/
+					if (base->ptr_tiny == ptr)
+						base->ptr_tiny = ptr->next;
+					else if (base->lst_tiny == ptr)
+						base->lst_tiny = ptr->prev;
 
-				munmap(ptr, TINY_ZONE);
+					/**	---- Rewiring ---- **/
+					if (ptr->next)
+						ptr->next->prev = ptr->prev;
+					if (ptr->prev)
+						ptr->prev->next = ptr->next;
+					base->size_tiny -= TINY_ZONE;
+
+					int rc = munmap(ptr, TINY_ZONE);
+					if (rc != 0)
+						perror("munmap(TINY_ZONE) failed\n");
+				}
 			} else {
-				// printf("liberating SMALL zone!\n");
-				if (base->ptr_small == ptr)
-					base->ptr_small = ptr->next;
-				else if (base->lst_small == ptr)
-					base->lst_small = ptr->prev;
-				base->size_tiny -= SMALL_ZONE;
-				
-				munmap(ptr, SMALL_ZONE);
+				if (base->size_tiny > SMALL_ZONE)
+				{
+					/**	---- Updating base ----	**/
+					if (base->ptr_small == ptr)
+						base->ptr_small = ptr->next;
+					else if (base->lst_small == ptr)
+						base->lst_small = ptr->prev;
+					
+					/**	---- Rewiring ---- **/
+					if (ptr->next)
+						ptr->next->prev = ptr->prev;
+					if (ptr->prev)
+						ptr->prev->next = ptr->next;
+					base->size_small -= SMALL_ZONE;
+
+					int rc2 = munmap(ptr, SMALL_ZONE);
+					if (rc2 != 0)
+						perror("munmap(SMALL_ZONE) failed\n");
+				}
 			}
 		}
 	}

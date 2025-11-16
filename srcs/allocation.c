@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/06 17:23:56 by chaidel           #+#    #+#             */
-/*   Updated: 2025/10/25 14:26:11 by marvin           ###   ########.fr       */
+/*   Updated: 2025/11/16 15:44:10 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,17 +28,11 @@ size_t align8(size_t size)
 	return (((((size - 1) >> 3) << 3)) + 8);
 }
 
-t_mptr* base  = NULL;
 /**
- * First call of malloc, allocate space for global heads.
+ * First call of malloc, initialize global heads.
 */
 bool	init_base()
 {
-	base = mmap(0, sizeof(t_mptr), PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
-	if (base == MAP_FAILED) {
-		return (false);
-	}
-
 	base->ptr_tiny = NULL;
 	base->ptr_small = NULL;
 	base->ptr_large = NULL;

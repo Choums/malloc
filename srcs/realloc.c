@@ -21,7 +21,7 @@ void*   realloc(void* ptr, size_t size)
         free(ptr);
         return (NULL);
     }
-    size_t   old_size = size;
+    // size_t   old_size = size;
     size = align8(size);
     if (((t_data*)(ptr - META_DATA))->size > size + META_DATA) // Smaller -> going for a split.
         {
@@ -57,11 +57,12 @@ void*   realloc(void* ptr, size_t size)
         }
 
         void* new_ptr = malloc(size);
+
         if (!new_ptr)
             return (NULL);
-
-        memmove(new_ptr, ptr, old_size);
+        ft_memmove(new_ptr, ptr, ((t_data*)(ptr - META_DATA))->size);
         free(ptr);
+        return (new_ptr);
     }
     else
         ((t_data*)(ptr - META_DATA))->size = size; // Cannot change size but update metadata size.

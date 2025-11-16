@@ -208,6 +208,56 @@ void test_realloc_null_behaves_like_malloc(void)
     if (p) free(p);
 }
 
+
+#define M (1024 * 1024)
+
+void print(char *s)
+{
+    write(1, s, strlen(s));
+}
+
+void     official_realloc()
+{
+    char *addr1;
+    char *addr2;
+    char *addr3;
+	ft_printf("addr1: %i\n", 128*M);
+    addr1 = (char*)malloc(16*M);
+	ASSERT(addr1, "allocate memory addr1");
+	// show_alloc_mem();
+    strcpy(addr1, "Hello world!\n");
+    print(addr1);
+
+    addr2 = (char*)malloc(16*M);
+	ASSERT(addr2, "allocate memory addr2");
+	ft_printf("addr2: %i\n", 16*M);
+	// show_alloc_mem();
+
+    addr3 = (char*)realloc(addr1, 128*M);
+	ASSERT(addr3, "Reallocate memory addr3");
+	ft_printf("addr3: %i\n", 128*M);
+	show_alloc_mem();
+    addr3[127*M] = 42;
+    print(addr3);
+}
+
+void    test_free()
+{
+    int   i;
+    char  *addr;
+
+    i = 0;
+    while (i < 1024) 
+    {
+		// show_alloc_mem();
+        addr = (char*)malloc(1024);
+		// show_alloc_mem();
+        addr[0] = 42;
+        free(addr); 
+        i++; 
+    }
+}
+
 int main(void) {
 	// ft_printf("Tiny size: %u\n", TINY_SIZE);
 	// ft_printf("Small size: %u\n", SMALL_SIZE);
@@ -215,7 +265,7 @@ int main(void) {
 	// test_show_alloc_mem();
 	// test_hundred_alloc();
 	// test_realloc();
-	simple_realloc();
+	// simple_realloc();
 	// test_write();
 	// test_realloc_null();
 	// big_malloc_test();
@@ -232,5 +282,8 @@ int main(void) {
 
     // printf("\nSummary: %d passed, %d failed\n\n", tests_passed, tests_failed);
 
+
+	// official_realloc();
+	test_free();
 	return (0);
 }

@@ -12,6 +12,9 @@
 
 #include "../includes/malloc.h"
 
+static t_mptr base_instance;
+t_mptr* base = &base_instance;
+
 void* malloc(size_t size)
 {
 	void* ptr;

@@ -21,7 +21,7 @@
 # include <sys/time.h>
 # include <stdbool.h>
 # include <pthread.h>
-# include "libft.h"
+# include "../libft/libft.h"
 
 # define PAGE_SIZE (size_t)getpagesize()
 
@@ -30,8 +30,8 @@
 */
 # define META_DATA sizeof(t_data)
 
-# define TINY_SIZE	(PAGE_SIZE / (8))
-# define SMALL_SIZE	(PAGE_SIZE / (4))
+# define TINY_SIZE	(PAGE_SIZE / (4))
+# define SMALL_SIZE	(PAGE_SIZE / (2))
 
 # define TINY_ZONE	(size_t)((TINY_SIZE + META_DATA) * 100)
 # define SMALL_ZONE	(size_t)((SMALL_SIZE + META_DATA) * 100)
@@ -94,13 +94,10 @@ struct s_data {
  */
 typedef struct s_data t_data;
 
-/** --	Thread safety.	-- **/
-
-extern pthread_mutex_t mutex;
-
 void*	malloc(size_t size);
 void	free(void* ptr);
 void*	realloc(void* ptr, size_t size);
+void	*calloc(size_t count, size_t size);
 
 /** --	Allocation	-- **/
 
